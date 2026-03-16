@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cooper Station — Open Source Space Habitat</title>
+<style>
+  :root {
+    --bg: #06080d;
+    --surface: rgba(15,23,42,0.7);
+    --border: rgba(148,163,184,0.12);
+    --text: #e2e8f0;
+    --muted: rgba(148,163,184,0.6);
+    --accent: #3b82f6;
+    --gold: #fbbf24;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+  canvas#scene { position:fixed; top:0; left:0; z-index:0; }
+
+  .overlay {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .overlay > * { pointer-events: auto; }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+  }
+  .hero-sub {
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #e2e8f0 30%, #64748b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+  }
+  .hero-tagline {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin-top: 1rem;
+    max-width: 500px;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-value {
+    font-family: 'Courier New', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 3px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+
+  /* Sections */
+  section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+  }
+  .section-title {
+    font-family: 'Courier New', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .section-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Modules Grid */
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .module-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: all 0.2s;
+  }
+  .module-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .module-num {
+    font-family: 'Courier New', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+  .module-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+  }
+  .module-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    line-height: 1.5;
+  }
+  .module-status {
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-top: 0.75rem;
+  }
+  .status-open { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .status-progress { background: rgba(234,179,8,0.15); color: #eab308; }
+
+  /* Specs */
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .spec-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .spec-value {
+    font-family: 'Courier New', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .spec-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+    letter-spacing: 1px;
+  }
+
+  /* Tech stack */
+  .tech-stack {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+  .tech-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    flex: 1;
+    min-width: 200px;
+  }
+  .tech-item h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .tech-item p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 6rem 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .cta-section .section-heading {
+    font-size: 2.5rem;
+  }
+  .cta-quote {
+    font-style: italic;
+    color: var(--muted);
+    margin-top: 2rem;
+    font-size: 0.9rem;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.7rem;
+    color: rgba(148,163,184,0.3);
+    font-family: 'Courier New', monospace;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+
+<div class="overlay">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-sub">Open Source Space Habitat Engineering</div>
+    <h1>COOPER STATION</h1>
+    <p class="hero-tagline">Building humanity's first O'Neill Cylinder — module by module, together.</p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-value">32 km</div>
+        <div class="stat-label">Length</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">8 km</div>
+        <div class="stat-label">Diameter</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">1.0 g</div>
+        <div class="stat-label">Gravity</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">12</div>
+        <div class="stat-label">Modules</div>
+      </div>
+    </div>
+
+    <div class="hero-cta">
+      <a href="https://github.com/zheimr/cooper-station" class="btn btn-primary">View on GitHub</a>
+      <a href="#modules" class="btn btn-secondary">Explore Modules</a>
+    </div>
+
+    <div class="scroll-hint">SCROLL TO EXPLORE</div>
+  </div>
+
+  <!-- Specs -->
+  <section>
+    <div class="section-title">Station Parameters</div>
+    <h2 class="section-heading">Engineering at Scale</h2>
+    <p style="color:var(--muted); max-width:600px; line-height:1.7; font-size:0.9rem;">
+      Cooper Station is an Island III O'Neill Cylinder — a pair of counter-rotating cylinders
+      in Saturn orbit. Every specification is grounded in real physics, real materials science,
+      and real aerospace engineering.
+    </p>
+    <div class="specs-grid">
+      <div class="spec-card"><div class="spec-value">0.473</div><div class="spec-label">RPM Rotation</div></div>
+      <div class="spec-card"><div class="spec-value">500 km²</div><div class="spec-label">Habitable Area</div></div>
+      <div class="spec-card"><div class="spec-value">1M</div><div class="spec-label">Population</div></div>
+      <div class="spec-card"><div class="spec-value">0.5 atm</div><div class="spec-label">Atmosphere</div></div>
+      <div class="spec-card"><div class="spec-value">198 m/s</div><div class="spec-label">Rim Velocity</div></div>
+      <div class="spec-card"><div class="spec-value">126.9 s</div><div class="spec-label">Rotation Period</div></div>
+    </div>
+  </section>
+
+  <!-- Modules -->
+  <section id="modules">
+    <div class="section-title">12 Core Modules</div>
+    <h2 class="section-heading">Pick a Module. Build the Future.</h2>
+    <p style="color:var(--muted); max-width:600px; line-height:1.7; font-size:0.9rem;">
+      Each module is an independent engineering domain. Fork the repo, pick a module,
+      and start contributing real engineering.
+    </p>
+    <div class="modules-grid">
+      <div class="module-card">
+        <div class="module-num">MODULE 01</div>
+        <div class="module-name">Structure</div>
+        <div class="module-desc">Hull design, materials science, stress analysis, mass budgets</div>
+        <span class="module-status status-progress">IN PROGRESS</span>
+      </div>
+      <div class="module-card">
+        <div class="module-num">MODULE 02</div>
+        <div class="module-name">Rotation & Gravity</div>
+        <div class="module-desc">Spin dynamics, gravity gradient, Coriolis effects, bearings</div>
+        <span class="module-status status-progress">IN PROGRESS</span>
+      </div>
+      <div class="module-card">
+        <div class="module-num">MODULE 03</div>
+        <div class="module-name">Atmosphere & ECLSS</div>
+        <div class="module-desc">Life support, air revitalization, water recovery, climate</div>
+        <span class="module-status status-open">OPEN</span>
+      </div>
+      <div class="module-card">
+        <div class="module-num">MODULE 04</div>
+        <div class="module-name">Agriculture</div>
+        <div class="module-desc">Food production, hydroponics, biomes, crop optimization</div>
+        <span class="module-status status-open">OPEN</span>
+      </div>
+      <div class="module-card">
+        <div class="module-num">MODULE 05</div>
+        <div class="module-name">Power Systems</div>
+        <div class="module-desc">Solar arrays, nuclear backup, energy storage, distribution</div>
+        <span class="module-status status-open">OPEN</span>
+      </div>
+      <div class="module-card">
+        <div class="module-num">MODULE 06</div>
+        <div class="module-name">Radiation Shielding</div>
+        <div class="module-desc">Cosmic ray protection, solar storm defense, dosimetry</div>
+        <span class="module-status status-open">OPEN</span>
+      </div>
+      <div class="module-card">
+        <div class="module-num">MODULE 07</div>
+        <div class="module-name">Habitat</div>
+        <div class="module-desc">Urban planning, residential zones, healthcare, psychology</div>
+        <span class="module-status status-open">OPEN</span>
+      </div>
+      <div class="module-card">
+        <div class="module-num">MODULE 08</div>
+        <div class="module-name">Transportation</div>
+        <div class="module-desc">Maglev transit, radial elevators, zero-g corridor</div>
+        <span class="module-status status-open">OPEN</span>
+      </div>
+      <div class="module-card">
+        <div class="module-num">MODULE 09</div>
+        <div class="module-name">Communications</div>
+        <div class="module-desc">Internal networks, deep space comms, positioning</div>
+        <span class="module-status status-open">OPEN</span>
+      </div>
+      <div class="module-card">
+        <div class="module-num">MODULE 10</div>
+        <div class="module-name">Industrial</div>
+        <div class="module-desc">Manufacturing, recycling, zero-g factories, mining</div>
+        <span class="module-status status-open">OPEN</span>
+      </div>
+      <div class="module-card">
+        <div class="module-num">MODULE 11</div>
+        <div class="module-name">Docking Ports</div>
+        <div class="module-desc">External interfaces, cargo logistics, escape vehicles</div>
+        <span class="module-status status-open">OPEN</span>
+      </div>
+      <div class="module-card">
+        <div class="module-num">MODULE 12</div>
+        <div class="module-name">Command & Control</div>
+        <div class="module-desc">Station AI, telemetry, emergency protocols, governance</div>
+        <span class="module-status status-open">OPEN</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech -->
+  <section>
+    <div class="section-title">Technology</div>
+    <h2 class="section-heading">Built to Simulate</h2>
+    <div class="tech-stack">
+      <div class="tech-item">
+        <h3>Rust Engine</h3>
+        <p>Core physics simulation — gravity, Coriolis, atmosphere, structural analysis. Compiles to WASM for browser.</p>
+      </div>
+      <div class="tech-item">
+        <h3>WebAssembly</h3>
+        <p>Run simulations in the browser at near-native speed. Interactive visualizations powered by real physics.</p>
+      </div>
+      <div class="tech-item">
+        <h3>Three.js</h3>
+        <p>3D visualization of the station, cross-sections, gravity zones, and real-time module status.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="section-title">Join the Build</div>
+    <h2 class="section-heading">Mankind Was Born on Earth.<br>It Was Never Meant to Die Here.</h2>
+    <div style="margin-top:2rem;">
+      <a href="https://github.com/zheimr/cooper-station" class="btn btn-primary">Contribute on GitHub</a>
+    </div>
+    <p class="cta-quote">"We used to look up at the sky and wonder at our place in the stars."</p>
+  </div>
+
+  <footer>Cooper Station Project — MIT License — zheimr</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Three.js background scene — rotating cylinder
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(8, 3, 12);
+camera.lookAt(0, 0, 0);
+
+// Stars
+const starsGeo = new THREE.BufferGeometry();
+const starsPos = new Float32Array(3000);
+for (let i = 0; i < 3000; i++) {
+  starsPos[i] = (Math.random() - 0.5) * 200;
+}
+starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+const starsMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.15, transparent: true, opacity: 0.6 });
+scene.add(new THREE.Points(starsGeo, starsMat));
+
+// Cylinder hull
+const cylGeo = new THREE.CylinderGeometry(2, 2, 10, 32, 1, true);
+const cylMat = new THREE.MeshPhongMaterial({
+  color: 0x334155,
+  transparent: true,
+  opacity: 0.4,
+  side: THREE.DoubleSide,
+  wireframe: false,
+});
+const cylinder = new THREE.Mesh(cylGeo, cylMat);
+cylinder.rotation.z = Math.PI / 2;
+scene.add(cylinder);
+
+// Wireframe overlay
+const wireGeo = new THREE.CylinderGeometry(2.01, 2.01, 10, 6, 8, true);
+const wireMat = new THREE.MeshBasicMaterial({ color: 0x475569, wireframe: true, transparent: true, opacity: 0.3 });
+const wireframe = new THREE.Mesh(wireGeo, wireMat);
+wireframe.rotation.z = Math.PI / 2;
+scene.add(wireframe);
+
+// End caps
+const capGeo = new THREE.CircleGeometry(2, 32);
+const capMat1 = new THREE.MeshPhongMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
+const capMat2 = new THREE.MeshPhongMaterial({ color: 0x1e293b, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
+
+const cap1 = new THREE.Mesh(capGeo, capMat1);
+cap1.position.x = 5;
+cap1.rotation.y = Math.PI / 2;
+scene.add(cap1);
+
+const cap2 = new THREE.Mesh(capGeo, capMat2);
+cap2.position.x = -5;
+cap2.rotation.y = Math.PI / 2;
+scene.add(cap2);
+
+// Ring structure (habitat ring)
+const ringGeo = new THREE.TorusGeometry(2.8, 0.08, 8, 32);
+const ringMat = new THREE.MeshPhongMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.5 });
+for (let i = 0; i < 3; i++) {
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.position.x = -3 + i * 3;
+  ring.rotation.y = Math.PI / 2;
+  scene.add(ring);
+}
+
+// Central axis line
+const axisGeo = new THREE.CylinderGeometry(0.02, 0.02, 14, 4);
+const axisMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.2 });
+const axis = new THREE.Mesh(axisGeo, axisMat);
+axis.rotation.z = Math.PI / 2;
+scene.add(axis);
+
+// Lighting
+const ambient = new THREE.AmbientLight(0x334155, 0.5);
+scene.add(ambient);
+const directional = new THREE.DirectionalLight(0xfbbf24, 0.8);
+directional.position.set(10, 5, 5);
+scene.add(directional);
+const point = new THREE.PointLight(0x3b82f6, 0.3, 30);
+point.position.set(-5, 3, 5);
+scene.add(point);
+
+// Scroll-based camera movement
+let scrollY = 0;
+window.addEventListener('scroll', () => { scrollY = window.scrollY; });
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  const t = Date.now() * 0.001;
+
+  // Rotate cylinder (slow, like real station)
+  cylinder.rotation.x = t * 0.15;
+  wireframe.rotation.x = t * 0.15;
+
+  // Scroll-based camera
+  const scrollFactor = scrollY / (document.body.scrollHeight - window.innerHeight || 1);
+  camera.position.y = 3 - scrollFactor * 6;
+  camera.position.z = 12 - scrollFactor * 4;
+  camera.lookAt(0, -scrollFactor * 2, 0);
+
+  // Subtle float
+  cylinder.position.y = Math.sin(t * 0.3) * 0.1;
+
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

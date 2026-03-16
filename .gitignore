@@ -1,0 +1,41 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# WASM
+/pkg/
+/wasm-pack-log.txt
+
+# Node (for landing page)
+node_modules/
+dist/
+.parcel-cache/
+
+# Python (simulation scripts)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build
+*.o
+*.so
+*.dylib
+*.wasm.map
+
+# Environment
+.env
+.env.local
