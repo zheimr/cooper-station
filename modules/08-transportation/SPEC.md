@@ -536,3 +536,15 @@ Focus areas:
    - Demand forecasting models
    - Congestion mitigation strategies
    - Real-time route optimization algorithms
+
+---
+
+## References
+
+- O'Neill, G.K. (1976). *The High Frontier: Human Colonies in Space*
+- Johnson, R.D. & Holbrow, C. (1977). *Space Settlements: A Design Study* (NASA SP-413)
+- Lee, H.W. et al. (2006). "Review of Maglev Train Technologies" — IEEE Transactions on Magnetics
+- Post, R.F. & Ryutov, D.D. (2000). "The Inductrack: A Simpler Approach to Magnetic Levitation" — LLNL
+- Hall, T.W. (1999). "Artificial Gravity and the Architecture of Orbital Habitats" — Coriolis effects on transportation
+- Vuchic, V.R. (2007). *Urban Transit Systems and Technology* — transit capacity calculations
+- Central Japan Railway — L0 Series Maglev specifications (603 km/h test speed)

@@ -487,3 +487,14 @@ Focus areas:
    - Heat pipe network optimization
    - Radiator panel design for space deployment
    - Waste heat recovery for secondary applications
+
+---
+
+## References
+
+- NASA Glenn Research Center — Space solar cell efficiency data (multi-junction cells)
+- NREL (2023) — Solar cell efficiency chart (best research-cell efficiencies)
+- World Nuclear Association — Small Modular Reactor specifications
+- DOE — Molten salt thermal storage (Sandia National Laboratories data)
+- ISS solar array specs (240 kW from 2,500 m² — 96 W/m² at 1 AU)
+- Solar constant: 1,361 W/m² at 1 AU (NASA)

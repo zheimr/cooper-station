@@ -641,3 +641,14 @@ Focus areas:
    - Layout optimization for gravity-dependent operations
    - Safety systems for hazardous manufacturing
    - Worker ergonomics in space manufacturing
+
+---
+
+## References
+
+- NASA In-Space Manufacturing program reports
+- Made In Space (now Redwire) — fiber optic manufacturing in microgravity (ZBLAN fiber)
+- Shelhamer, M. (2016). "Parabolic Flight as a Spaceflight Analog" — microgravity manufacturing research
+- Curreri, P.A. & Stefanescu, D.M. (1988). "Low-Gravity Effects on Solidification" — NASA MSFC
+- European Space Agency — "Materials Science in Space" program publications
+- ISRU (In-Situ Resource Utilization) technical reports — asteroid mining feasibility

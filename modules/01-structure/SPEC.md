@@ -151,3 +151,14 @@ If you want to contribute to this module, focus areas include:
 3. Bearing system design for counter-rotation
 4. End cap structural analysis
 5. Construction sequence planning
+
+---
+
+## References
+
+- O'Neill, G.K. (1976). *The High Frontier: Human Colonies in Space*
+- Johnson, R.D. & Holbrow, C. (1977). *Space Settlements: A Design Study* (NASA SP-413)
+- ASM International — Materials properties database for Ti-6Al-4V, CFRP, steel alloys
+- Toray Industries — Carbon fiber composite datasheets (T700, T1100)
+- NASA TRL definitions (Technology Readiness Levels 1-9)
+- Hoop stress derivation: σ = ρω²R² for rotating thin-walled cylinders

@@ -465,3 +465,15 @@ Focus areas:
    - Nutritional completeness validation
    - Yield forecasting under various failure modes
    - Labor requirements for food production
+
+---
+
+## References
+
+- Wheeler, R.M. (2017). "Agriculture for Space: People and Places Paving the Way" — NASA KSC
+- Massa, G.D. et al. (2015). "Plant Pillow: A Novel Planting System for ISS" — NASA Veggie experiment
+- Bugbee, B. & Salisbury, F.B. (1988). "Exploring the Limits of Crop Productivity" — Utah State, hydroponic yields
+- Zabel, P. et al. (2016). "Review and analysis of over 40 years of space plant growth systems" — DLR
+- FAO (2011). "Global Food Losses and Food Waste" — caloric requirements per capita
+- Despommier, D. (2010). "The Vertical Farm" — vertical farming calculations
+- NASA CELSS (Controlled Ecological Life Support System) program reports

@@ -16,12 +16,38 @@ The Environmental Control and Life Support System (ECLSS) maintains a breathable
 | Parameter | Value | Rationale |
 |---|---|---|
 | Total pressure | 50.65 kPa (0.5 atm) | Reduces hull stress, sufficient for life |
-| O₂ partial pressure | 20.26 kPa (40%) | Sea-level equivalent O₂ availability |
+| O₂ partial pressure | 20.26 kPa (40%) | ~95% of sea-level ppO₂ (see note below) |
 | N₂ partial pressure | 30.39 kPa (60%) | Fire suppression, prevents O₂ toxicity |
 | Temperature range | 15-30°C | Zoned by area function |
 | Relative humidity | 40-70% | Varies by zone |
 | CO₂ limit | <1000 ppm | Below health concern threshold |
 | Atmospheric mass | ~2.5 × 10⁸ tonnes | Significant shielding contribution |
+
+### Note on O₂ Partial Pressure
+
+By **Dalton's law of partial pressures**, the physiologically relevant quantity is the
+partial pressure of O₂ (ppO₂), not the percentage concentration alone:
+
+```
+ppO₂ = fraction_O₂ × P_total
+
+Sea level (Earth):      0.21 × 101.3 kPa  = 21.3 kPa
+Cooper Station (rim):   0.40 ×  50.65 kPa  = 20.26 kPa   (~95% of sea level)
+Skylab (historical):    0.72 ×  34.5 kPa   = 24.8 kPa    (~116% of sea level)
+ISS (current):          0.21 × 101.3 kPa   = 21.3 kPa    (sea-level nominal)
+```
+
+Cooper Station's 20.26 kPa is **close to, but not identical to**, sea-level ppO₂.
+The ~5% deficit is comparable to breathing at ~400 m altitude on Earth — well within
+the range tolerated by healthy individuals without acclimatization. This is an
+acceptable design trade-off: the reduced total pressure (0.5 atm) significantly
+lowers hull structural requirements (Module 01), while the elevated O₂ fraction
+compensates for most of the ppO₂ loss.
+
+The 40% O₂ concentration does increase fire risk relative to sea-level air (21% O₂),
+but is substantially safer than Skylab's 72% O₂ environment. The 60% N₂ diluent
+provides meaningful fire suppression compared to pure or near-pure O₂ atmospheres.
+See the fire safety open question below.
 
 ### Pressure Gradient
 
@@ -164,7 +190,7 @@ Zero-waste-to-void policy
 
 - [ ] Atmospheric stability with weather systems at this scale
 - [ ] Microbiome management — preventing pathogenic evolution
-- [ ] Fire suppression in half-atmosphere (different flame behavior)
+- [ ] Fire suppression in 40% O₂ / 0.5 atm environment (elevated O₂ fraction increases flammability despite lower total pressure; flame behavior differs from both sea-level air and historical high-O₂ spacecraft)
 - [ ] Odor management across climate zones
 - [ ] Atmospheric leakage rate and makeup requirements
 - [ ] Integration of natural water cycle with engineered systems
@@ -179,3 +205,15 @@ Focus areas:
 3. Water treatment system engineering
 4. Climate modeling inside a rotating cylinder
 5. Fire safety engineering in modified atmosphere
+
+---
+
+## References
+
+- Johnson, R.D. & Holbrow, C., eds. (1977). *Space Settlements: A Design Study*. NASA SP-413. National Aeronautics and Space Administration. — Foundational O'Neill-cylinder design study covering atmospheric composition, ECLSS closure, and mass budgets.
+- O'Neill, G.K. (1976). *The High Frontier: Human Colonies in Space*. William Morrow & Company. — Original proposal for large-scale rotating space habitats with reduced-pressure, oxygen-enriched atmospheres.
+- NASA (2006–present). *International Space Station ECLSS Technical Reports*. — ISS life support operates at 101.3 kPa with 21% O₂ (ppO₂ = 21.3 kPa), providing the modern baseline for closed-loop atmospheric recycling, CO₂ removal (Sabatier/CDRA), and water recovery (WRS).
+- Belew, L.F., ed. (1977). *Skylab, Our First Space Station*. NASA SP-400. — Skylab operated at 34.5 kPa with 72% O₂ (ppO₂ = 24.8 kPa), demonstrating long-duration human habitation in a low-pressure, high-O₂ environment.
+- NASA (1973). *Skylab Mission Evaluation*. NASA TM X-64835. — Detailed atmospheric composition and fire safety data for the 72% O₂ / 28% N₂ environment at 34.5 kPa total pressure.
+- Dalton, J. (1802). "Essay IV: On the Expansion of Elastic Fluids by Heat." *Memoirs of the Literary and Philosophical Society of Manchester*, 5:595–602. — Dalton's law of partial pressures: the total pressure of a gas mixture equals the sum of the partial pressures of each component.
+- West, J.B. (1996). "Prediction of Barometric Pressures at High Altitude." *Journal of Applied Physiology*, 81(3):1264–1272. — Establishes the relationship between altitude, barometric pressure, and ppO₂ thresholds for human physiology; the ~400 m altitude equivalence for the Cooper Station ppO₂ deficit is derived from this framework.

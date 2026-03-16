@@ -538,3 +538,15 @@ Focus areas:
    - Radiation shelter architecture and access
    - Shielding-thermal control integration
    - Cost-benefit analysis of different shielding strategies
+
+---
+
+## References
+
+- Cucinotta, F.A. et al. (2013). "Space Radiation Risks to the Central Nervous System" — NASA
+- NCRP Report No. 132 (2000). "Radiation Protection Guidance for Activities in Low-Earth Orbit"
+- Durante, M. & Cucinotta, F.A. (2011). "Physical basis of radiation protection in space travel" — Reviews of Modern Physics
+- Simpson, J.A. (1983). "Elemental and isotopic composition of the galactic cosmic rays" — Annual Review of Nuclear Science
+- Townsend, L.W. (2005). "Critical analysis of active shielding methods for space radiation protection" — NASA
+- ICRP Publication 103 (2007). "The 2007 Recommendations of the International Commission on Radiological Protection"
+- Spillantini, P. et al. (2007). "Shielding from cosmic radiation for interplanetary missions"

@@ -280,9 +280,75 @@ Raw materials (bulk storage):
 
 ## Emergency Escape & Rescue Systems
 
+### Evacuation Philosophy
+
+**Core principle:** Full evacuation of a 1,000,000-person habitat is neither feasible nor the correct design goal.
+
+Cooper Station is analogous to a major Earth city. No city on Earth maintains the capacity to simultaneously evacuate its entire population into lifeboats. Instead, cities rely on structural redundancy, compartmentalization, and graduated emergency response. The same philosophy applies here.
+
+```
+Why full-population evacuation is the wrong model:
+
+1. Scale makes it impossible
+   - 1,000,000 people at 100 per lifeboat = 10,000 lifeboats
+   - 10,000 lifeboats at 50 tonnes each = 500,000 tonnes of dead mass
+   - This exceeds the entire docking infrastructure mass by 32×
+   - Fuel, maintenance, and port space would be prohibitive
+
+2. The station IS the lifeboat
+   - Cooper Station is the most robust life-support system in space
+   - Any scenario that destroys the entire station simultaneously
+     would also destroy a lifeboat fleet docked to it
+   - The engineering goal is to make total station loss structurally
+     impossible through redundancy, not to plan around it
+
+3. Localized events are the realistic threat model
+   - Docking port breach, fire near hub, micrometeorite strike
+   - These affect hundreds to thousands of people, not millions
+   - The correct response is isolation and local evacuation
+```
+
+### Graduated Emergency Response
+
+```
+Level 1 — Local Section Isolation (automated)
+  Trigger: Pressure drop, fire, toxic atmosphere in a section
+  Response: Automated bulkheads seal the affected section
+  Affected population: 1,000-5,000 people
+  Action: Residents shelter in adjacent sealed compartments
+  Time to activate: <30 seconds (fully automated)
+
+Level 2 — Zone Evacuation to Adjacent Sections
+  Trigger: Section damage exceeds isolation capability
+  Response: Orderly evacuation of affected zone through bulkhead corridors
+  Affected population: 10,000-50,000 people
+  Action: Relocate to neighboring habitat zones via internal transit
+  Time to complete: 1-4 hours depending on zone size
+  Infrastructure: Each habitat zone has 72+ hours of independent
+    life support (air, water, power) to absorb evacuees
+
+Level 3 — Hub Evacuation via Lifeboats
+  Trigger: Hub-area emergency (docking accident, catastrophic breach)
+  Response: Launch lifeboats with hub personnel
+  Affected population: Up to 1,000 people (hub occupants)
+  Covers: Control crew, medical staff, children in nearby nurseries,
+    docked spacecraft crews, anyone in the hub during the event
+  Time to launch: <15 minutes from alert
+
+Level 4 — Total Station Loss (design-excluded scenario)
+  This scenario is addressed through engineering prevention, not evacuation:
+  - Triple-redundant structural members at all critical joints
+  - Independent life support in each of 20+ sealed habitat sections
+  - No single failure or credible chain of failures can compromise
+    all sections simultaneously
+  - Station-wide catastrophe (e.g., war, asteroid impact) falls outside
+    the scope of onboard evacuation planning and is addressed by
+    strategic defense systems (see Module 14)
+```
+
 ### Emergency Escape Vehicles
 
-**Requirement:** Evacuate critical personnel if station becomes uninhabitable
+**Requirement:** Evacuate hub-area personnel during localized docking or hub emergencies
 
 ```
 Lifeboat specifications:
@@ -299,9 +365,18 @@ Performance:
 - Medical facilities: Basic first aid, trauma care
 
 Fleet size: 10 lifeboats (1,000 person capacity)
-- ~0.1% of population
-- Assumes orderly evacuation (not simultaneous total evacuation)
-- Critical personnel prioritized (leadership, technical experts)
+- Sized for hub-area population, NOT full station evacuation
+- Covers: control crew, medical staff, docked ship crews,
+  children in hub nurseries, transiting passengers
+- Hub working population at any time: ~500-800 people
+- 1,000 capacity provides ~25% safety margin
+
+Priority boarding manifest (maintained and updated daily):
+1. Children and dependents present in hub area
+2. Medical and emergency response personnel
+3. Docked spacecraft crews (no ship to return to)
+4. Station command and control staff
+5. All other hub-area personnel
 
 Docking: Permanent attachment at 4 dedicated emergency ports
 - Ready for launch at all times (24/7 standby crew)
@@ -330,27 +405,54 @@ Operations:
 - Annual rescue operations: 5-10 incident responses expected
 ```
 
-### Shelter-in-Place Alternative
+### Shelter-in-Place — Primary Strategy for General Population
+
+**This is the primary emergency response for the 1,000,000 residents, not a fallback.**
 
 ```
-If evacuation impossible (e.g., power failure of all tugs):
+Station compartmentalization (the real evacuation strategy):
 
-Central radiation shelter becomes refuge:
+The station is divided into 20+ independently sealed habitat sections.
+Each section is designed to sustain its population autonomously:
+- Independent atmosphere recycling (O₂ generation, CO₂ scrubbing)
+- Independent water recycling (closed-loop)
+- Emergency power (battery + fuel cell backup for 72+ hours)
+- Food reserves: 7-day emergency rations per resident, stored locally
+- Medical supplies: Trauma kits and 72-hour pharmaceutical stock
+
+Section isolation capability:
+- Automated bulkheads seal in <30 seconds on pressure/fire alarm
+- Each section: ~50,000 residents (self-contained neighborhood)
+- Bulkhead integrity: Rated for full vacuum on one side
+- Manual override: Accessible from both sides of every bulkhead
+
+Central radiation shelter (hub area, supplements section isolation):
 - Capacity: 10,000 people
 - Duration: 48 hours independent life support
 - Location: Heavily shielded central hub
-- Access: Redundant pathways from all zones
+- Primary use: Hub workers during solar events or hub-local emergencies
+- Access: Redundant pathways from all hub zones
 
 Activation procedure:
 - Automatic alert system (multiple independent triggers)
-- All residents ordered to shelter (population drills quarterly)
-- Shelter doors seal (prevent cascading decompression)
-- Internal life support activates (independent of main systems)
+- Section residents shelter in their own section (stay in place)
+- Hub personnel proceed to central radiation shelter
+- Bulkhead doors seal (prevent cascading decompression)
+- Each section's internal life support activates independently
 
-Survival approach:
-- Wait for resupply mission from Earth (10-30 days)
-- Repair of main station systems while sheltered
-- Rationed supplies (1,000 calories/person/day minimum)
+Recovery approach:
+- Damage control teams deployed from unaffected sections
+- Repair of affected section while remainder operates normally
+- If section is unrecoverable: permanent evacuation of ~50,000
+  residents to other sections (station designed with 15% surge capacity)
+- External resupply from Earth only needed if multiple sections fail
+  simultaneously (an event the redundancy architecture is designed
+  to prevent)
+
+Population drill schedule:
+- Section isolation drill: Quarterly (all residents)
+- Hub evacuation drill: Monthly (hub personnel only)
+- Full station drill (all sections simultaneously): Annually
 ```
 
 ---
@@ -487,7 +589,7 @@ Docking port power supply:
 
 - [ ] Optimal docking port spacing for maximum through-put
 - [ ] Spin-matching procedure safety for uncrewed spacecraft
-- [ ] Emergency evacuation of 1M population feasibility (currently unclear)
+- [x] ~~Emergency evacuation of 1M population feasibility~~ — Resolved: full evacuation is not the design goal; graduated response with shelter-in-place is the primary strategy (see Evacuation Philosophy)
 - [ ] Economic viability of manufacturing high-value products (pharmaceutical, materials)
 - [ ] Supply chain sustainability (how dependent on Earth resupply?)
 - [ ] Crew training requirements for operation in variable gravity
@@ -515,7 +617,8 @@ Focus areas:
 3. **Emergency systems**
    - Lifeboat design and testing
    - Rescue tug operations procedures
-   - Evacuation logistics for 1M population
+   - Graduated emergency response procedures and section isolation validation
+   - Shelter-in-place capacity analysis across all habitat sections
 
 4. **Fleet management**
    - Spacecraft scheduling optimization
@@ -526,3 +629,14 @@ Focus areas:
    - Magnetic bearing design for rotating/non-rotating interface
    - Seal design for pressurized rotating joint
    - Load analysis during docking impact
+
+---
+
+## References
+
+- NASA Docking System (NDS) Interface Definition Document (IDD)
+- International Docking System Standard (IDSS) — docking mechanism specifications
+- Fehse, W. (2003). "Automated Rendezvous and Docking of Spacecraft" — ESA
+- ISS visiting vehicle operations handbook
+- SpaceX Dragon cargo manifest data — supply chain logistics
+- NASA ECLSS consumables resupply rates for ISS

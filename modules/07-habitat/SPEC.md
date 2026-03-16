@@ -498,3 +498,16 @@ Focus areas:
    - Resource allocation mechanisms
    - Conflict resolution procedures
    - Emergency decision-making protocols
+
+---
+
+## References
+
+- O'Neill, G.K. (1976). *The High Frontier: Human Colonies in Space*
+- Johnson, R.D. & Holbrow, C. (1977). *Space Settlements: A Design Study* (NASA SP-413)
+- Clearwater, Y.A. (1985). "Human Factors for a Habitable Lunar Base" — NASA Ames
+- Harrison, A.A. et al. (1991). *From Antarctica to Outer Space* — psychological isolation studies
+- Stuster, J. (1996). *Bold Endeavors: Lessons from Polar and Space Exploration* — small group dynamics
+- UN-Habitat (2020). *World Cities Report* — urban density benchmarks
+- Whyte, W.H. (1980). *The Social Life of Small Urban Spaces* — public space design principles
+- Kanas, N. & Manzey, D. (2008). *Space Psychology and Psychiatry* — long-duration spaceflight psychology

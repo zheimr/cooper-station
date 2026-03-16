@@ -180,3 +180,14 @@ Focus areas:
 3. Spin-up simulation (structural stress during acceleration)
 4. Human factors research on rotation adaptation
 5. Sports and recreation physics in rotating frame
+
+---
+
+## References
+
+- O'Neill, G.K. (1976). *The High Frontier: Human Colonies in Space*
+- Johnson, R.D. & Holbrow, C. (1977). *Space Settlements: A Design Study* (NASA SP-413)
+- Hall, T.W. (1999). *Artificial Gravity and the Architecture of Orbital Habitats* — rotation comfort thresholds
+- Lackner, J.R. & DiZio, P. (2005). *Vestibular, Proprioceptive, and Haptic Contributions to Spatial Orientation* — Coriolis sickness research
+- Young, L.R. (2000). *Artificial Gravity Considerations for a Mars Exploration Mission* — MIT Man Vehicle Lab
+- Stone, R.W. (1973). *An Overview of Artificial Gravity* (NASA SP-314) — rotation rate limits (<2 RPM recommendation)

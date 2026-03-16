@@ -706,3 +706,15 @@ Focus areas:
    - Unified command system architecture
    - Module interdependency modeling
    - Resource allocation during conflicts (priorities)
+
+---
+
+## References
+
+- NASA Mission Operations Directorate — Mission Control Center operations procedures
+- Hollnagel, E. & Woods, D.D. (2005). "Joint Cognitive Systems" — human-automation interaction
+- Perrow, C. (1984). "Normal Accidents" — complex system failure modes
+- Reason, J. (1997). "Managing the Risks of Organizational Accidents" — safety management systems
+- ISS Command & Data Handling architecture documentation
+- NIST Cybersecurity Framework — critical infrastructure protection
+- Endsley, M.R. (1995). "Toward a Theory of Situation Awareness in Dynamic Systems" — SA in command centers
