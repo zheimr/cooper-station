@@ -2,7 +2,7 @@
 
 **Open-Source Space Habitat Engineering Initiative**
 
-> *"We used to look up at the sky and wonder at our place in the stars. Now we just look down, and worry about our place in the dirt."* — Cooper
+> Open-source physics engine and engineering specs for a 32 km rotating space habitat. Real math, real materials, no handwaving.
 
 ---
 
