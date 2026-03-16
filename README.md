@@ -1,3 +1,9 @@
+![CI](https://github.com/zheimr/cooper-station/actions/workflows/ci.yml/badge.svg)
+![Pages](https://github.com/zheimr/cooper-station/actions/workflows/pages.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Rust](https://img.shields.io/badge/Rust-000000?logo=rust&logoColor=white)
+![WASM](https://img.shields.io/badge/WebAssembly-654FF0?logo=webassembly&logoColor=white)
+
 # Cooper Station Project
 
 **Open-Source Space Habitat Engineering Initiative**

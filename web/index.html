@@ -4,6 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cooper Station — Open Source Space Habitat</title>
+<meta name="description" content="Open-source O'Neill Cylinder space habitat engineering project. Rust physics engine, 12 engineering modules, 3D visualization. Build humanity's first space colony.">
+<meta name="keywords" content="space habitat, O'Neill Cylinder, space station, aerospace engineering, Rust, WASM, physics simulation, Interstellar">
+<meta name="author" content="Cooper Station Project">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cooper Station — Open Source Space Habitat">
+<meta property="og:description" content="Building humanity's first O'Neill Cylinder — module by module, together. Rust physics engine, 12 engineering modules, 3D visualization.">
+<meta property="og:url" content="https://zheimr.github.io/cooper-station/">
+<meta property="og:site_name" content="Cooper Station">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cooper Station — Open Source Space Habitat">
+<meta name="twitter:description" content="Open-source O'Neill Cylinder space habitat with Rust physics engine and 12 engineering modules.">
+
+<!-- Favicon (inline SVG) -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='none' stroke='%233b82f6' stroke-width='4'/><ellipse cx='50' cy='50' rx='45' ry='15' fill='none' stroke='%23fbbf24' stroke-width='3'/><circle cx='50' cy='50' r='3' fill='%23fbbf24'/></svg>" type="image/svg+xml">
+
+<!-- Theme color -->
+<meta name="theme-color" content="#06080d">
 <style>
   :root {
     --bg: #06080d;
@@ -168,6 +189,7 @@
   .module-card:hover {
     border-color: var(--accent);
     transform: translateY(-2px);
+    cursor: pointer;
   }
   .module-num {
     font-family: 'Courier New', monospace;
@@ -343,78 +365,78 @@
       and start contributing real engineering.
     </p>
     <div class="modules-grid">
-      <div class="module-card">
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/01-structure/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 01</div>
         <div class="module-name">Structure</div>
         <div class="module-desc">Hull design, materials science, stress analysis, mass budgets</div>
         <span class="module-status status-progress">IN PROGRESS</span>
-      </div>
-      <div class="module-card">
+      </a>
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/02-rotation-gravity/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 02</div>
         <div class="module-name">Rotation & Gravity</div>
         <div class="module-desc">Spin dynamics, gravity gradient, Coriolis effects, bearings</div>
         <span class="module-status status-progress">IN PROGRESS</span>
-      </div>
-      <div class="module-card">
+      </a>
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/03-atmosphere-eclss/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 03</div>
         <div class="module-name">Atmosphere & ECLSS</div>
         <div class="module-desc">Life support, air revitalization, water recovery, climate</div>
         <span class="module-status status-open">OPEN</span>
-      </div>
-      <div class="module-card">
+      </a>
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/04-agriculture/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 04</div>
         <div class="module-name">Agriculture</div>
         <div class="module-desc">Food production, hydroponics, biomes, crop optimization</div>
         <span class="module-status status-open">OPEN</span>
-      </div>
-      <div class="module-card">
+      </a>
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/05-power-systems/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 05</div>
         <div class="module-name">Power Systems</div>
         <div class="module-desc">Solar arrays, nuclear backup, energy storage, distribution</div>
         <span class="module-status status-open">OPEN</span>
-      </div>
-      <div class="module-card">
+      </a>
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/06-radiation-shielding/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 06</div>
         <div class="module-name">Radiation Shielding</div>
         <div class="module-desc">Cosmic ray protection, solar storm defense, dosimetry</div>
         <span class="module-status status-open">OPEN</span>
-      </div>
-      <div class="module-card">
+      </a>
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/07-habitat/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 07</div>
         <div class="module-name">Habitat</div>
         <div class="module-desc">Urban planning, residential zones, healthcare, psychology</div>
         <span class="module-status status-open">OPEN</span>
-      </div>
-      <div class="module-card">
+      </a>
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/08-transportation/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 08</div>
         <div class="module-name">Transportation</div>
         <div class="module-desc">Maglev transit, radial elevators, zero-g corridor</div>
         <span class="module-status status-open">OPEN</span>
-      </div>
-      <div class="module-card">
+      </a>
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/09-communications/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 09</div>
         <div class="module-name">Communications</div>
         <div class="module-desc">Internal networks, deep space comms, positioning</div>
         <span class="module-status status-open">OPEN</span>
-      </div>
-      <div class="module-card">
+      </a>
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/10-industrial/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 10</div>
         <div class="module-name">Industrial</div>
         <div class="module-desc">Manufacturing, recycling, zero-g factories, mining</div>
         <span class="module-status status-open">OPEN</span>
-      </div>
-      <div class="module-card">
+      </a>
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/11-docking-ports/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 11</div>
         <div class="module-name">Docking Ports</div>
         <div class="module-desc">External interfaces, cargo logistics, escape vehicles</div>
         <span class="module-status status-open">OPEN</span>
-      </div>
-      <div class="module-card">
+      </a>
+      <a href="https://github.com/zheimr/cooper-station/blob/main/modules/12-command-control/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
         <div class="module-num">MODULE 12</div>
         <div class="module-name">Command & Control</div>
         <div class="module-desc">Station AI, telemetry, emergency protocols, governance</div>
         <span class="module-status status-open">OPEN</span>
-      </div>
+      </a>
     </div>
   </section>
 
