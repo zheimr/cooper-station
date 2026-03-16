@@ -72,16 +72,19 @@
   .hero h1 {
     font-size: clamp(2.5rem, 8vw, 5rem);
     font-weight: 800;
-    background: linear-gradient(135deg, #e2e8f0 30%, #64748b);
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 40%, #64748b 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     line-height: 1.1;
+    text-shadow: 0 0 80px rgba(59,130,246,0.15);
+    filter: drop-shadow(0 0 30px rgba(59,130,246,0.08));
   }
   .hero-tagline {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: var(--muted);
     margin-top: 1rem;
-    max-width: 500px;
+    max-width: 540px;
+    line-height: 1.6;
   }
   .hero-stats {
     display: flex;
@@ -152,6 +155,17 @@
     50% { opacity: 0.8; }
   }
 
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   /* Sections */
   section {
     max-width: 1100px;
@@ -184,12 +198,15 @@
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 1.25rem;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
   }
   .module-card:hover {
     border-color: var(--accent);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     cursor: pointer;
+    box-shadow: 0 8px 30px rgba(59,130,246,0.08);
+    background: rgba(15,23,42,0.85);
   }
   .module-num {
     font-family: 'Courier New', monospace;
@@ -233,6 +250,12 @@
     border-radius: 10px;
     padding: 1.25rem;
     text-align: center;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+  .spec-card:hover {
+    border-color: rgba(251,191,36,0.3);
+    transform: translateY(-2px);
   }
   .spec-value {
     font-family: 'Courier New', monospace;
@@ -261,6 +284,12 @@
     padding: 1.5rem;
     flex: 1;
     min-width: 200px;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+  .tech-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
   }
   .tech-item h3 {
     font-size: 1rem;
@@ -281,13 +310,6 @@
   .cta-section .section-heading {
     font-size: 2.5rem;
   }
-  .cta-quote {
-    font-style: italic;
-    color: var(--muted);
-    margin-top: 2rem;
-    font-size: 0.9rem;
-  }
-
   /* Footer */
   footer {
     text-align: center;
@@ -306,9 +328,9 @@
 <div class="overlay">
   <!-- Hero -->
   <div class="hero">
-    <div class="hero-sub">Open Source Space Habitat Engineering</div>
+    <div class="hero-sub">O'Neill Cylinder Engineering Project</div>
     <h1>COOPER STATION</h1>
-    <p class="hero-tagline">Building humanity's first O'Neill Cylinder — module by module, together.</p>
+    <p class="hero-tagline">Open-source physics engine and engineering specs for a 32 km rotating space habitat. Real math, real materials, no handwaving.</p>
 
     <div class="hero-stats">
       <div class="stat">
@@ -339,13 +361,12 @@
   </div>
 
   <!-- Specs -->
-  <section>
+  <section class="reveal">
     <div class="section-title">Station Parameters</div>
-    <h2 class="section-heading">Engineering at Scale</h2>
+    <h2 class="section-heading">Derived Parameters</h2>
     <p style="color:var(--muted); max-width:600px; line-height:1.7; font-size:0.9rem;">
-      Cooper Station is an Island III O'Neill Cylinder — a pair of counter-rotating cylinders
-      in Saturn orbit. Every specification is grounded in real physics, real materials science,
-      and real aerospace engineering.
+      Island III O'Neill Cylinder. Dual counter-rotating pair. All values computed from
+      <span style="color:var(--gold);font-family:'Courier New',monospace;">a = ω²r</span> with r = 4,000 m.
     </p>
     <div class="specs-grid">
       <div class="spec-card"><div class="spec-value">0.473</div><div class="spec-label">RPM Rotation</div></div>
@@ -358,12 +379,12 @@
   </section>
 
   <!-- Modules -->
-  <section id="modules">
+  <section id="modules" class="reveal">
     <div class="section-title">12 Core Modules</div>
-    <h2 class="section-heading">Pick a Module. Build the Future.</h2>
+    <h2 class="section-heading">Independent Engineering Domains</h2>
     <p style="color:var(--muted); max-width:600px; line-height:1.7; font-size:0.9rem;">
-      Each module is an independent engineering domain. Fork the repo, pick a module,
-      and start contributing real engineering.
+      Each module has its own SPEC.md with calculations, constraints, and open questions.
+      Pick one, do the math, submit a PR.
     </p>
     <div class="modules-grid">
       <a href="https://github.com/zheimr/cooper-station/blob/main/modules/01-structure/SPEC.md" class="module-card" style="text-decoration:none;color:inherit;">
@@ -442,9 +463,9 @@
   </section>
 
   <!-- Tech -->
-  <section>
+  <section class="reveal">
     <div class="section-title">Technology</div>
-    <h2 class="section-heading">Built to Simulate</h2>
+    <h2 class="section-heading">Stack</h2>
     <div class="tech-stack">
       <div class="tech-item">
         <h3>Rust Engine</h3>
@@ -461,14 +482,41 @@
     </div>
   </section>
 
-  <!-- CTA -->
-  <div class="cta-section">
-    <div class="section-title">Join the Build</div>
-    <h2 class="section-heading">Mankind Was Born on Earth.<br>It Was Never Meant to Die Here.</h2>
-    <div style="margin-top:2rem;">
-      <a href="https://github.com/zheimr/cooper-station" class="btn btn-primary">Contribute on GitHub</a>
+  <!-- How to Contribute -->
+  <section class="reveal">
+    <div class="section-title">Contribute</div>
+    <h2 class="section-heading">How to Get Involved</h2>
+    <div class="tech-stack">
+      <div class="tech-item">
+        <h3>1. Pick a Module</h3>
+        <p>10 of 12 engineering modules are open. Each has a SPEC.md with current calculations and open questions that need answers.</p>
+      </div>
+      <div class="tech-item">
+        <h3>2. Do the Math</h3>
+        <p>We need aerospace, structural, mechanical, chemical, and agricultural engineers. Cite sources, show work, document gaps honestly.</p>
+      </div>
+      <div class="tech-item">
+        <h3>3. Submit a PR</h3>
+        <p>Fork the repo, add your calculations to the relevant module's SPEC.md or extend the Rust physics engine, and open a pull request.</p>
+      </div>
     </div>
-    <p class="cta-quote">"We used to look up at the sky and wonder at our place in the stars."</p>
+    <div style="margin-top:2rem;text-align:center;font-family:'Courier New',monospace;font-size:0.8rem;color:var(--muted);line-height:2;">
+      <div>Aerospace engineers — radiation shielding, power systems, docking</div>
+      <div>Structural engineers — hull materials, stress analysis, mass optimization</div>
+      <div>Life scientists — ECLSS, agriculture, biome design</div>
+      <div>Urban planners — habitat layout, transportation, population modeling</div>
+      <div>Software engineers — Rust engine, WASM, visualization, CI/CD</div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section reveal">
+    <div class="section-title">Open Source</div>
+    <h2 class="section-heading">12 modules, 30+ unit tests, 0 contributors.<br>The math is waiting.</h2>
+    <div style="margin-top:2rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="https://github.com/zheimr/cooper-station" class="btn btn-primary">View Repository</a>
+      <a href="dashboard.html" class="btn btn-secondary">Live Dashboard</a>
+    </div>
   </div>
 
   <footer>Cooper Station Project — MIT License — zheimr</footer>
@@ -476,111 +524,90 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// Three.js background scene — rotating cylinder
 const canvas = document.getElementById('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(8, 3, 12);
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 500);
+camera.position.set(8, 3, 16);
 camera.lookAt(0, 0, 0);
 
 // Stars
-const starsGeo = new THREE.BufferGeometry();
-const starsPos = new Float32Array(3000);
-for (let i = 0; i < 3000; i++) {
-  starsPos[i] = (Math.random() - 0.5) * 200;
-}
-starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
-const starsMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.15, transparent: true, opacity: 0.6 });
-scene.add(new THREE.Points(starsGeo, starsMat));
+const starGeo = new THREE.BufferGeometry();
+const starPos = new Float32Array(3000 * 3);
+for (let i = 0; i < 3000 * 3; i++) starPos[i] = (Math.random() - 0.5) * 300;
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.5 })));
 
 // Cylinder hull
-const cylGeo = new THREE.CylinderGeometry(2, 2, 10, 32, 1, true);
-const cylMat = new THREE.MeshPhongMaterial({
-  color: 0x334155,
-  transparent: true,
-  opacity: 0.4,
-  side: THREE.DoubleSide,
-  wireframe: false,
-});
-const cylinder = new THREE.Mesh(cylGeo, cylMat);
-cylinder.rotation.z = Math.PI / 2;
-scene.add(cylinder);
+const hull = new THREE.Mesh(
+  new THREE.CylinderGeometry(2, 2, 10, 48, 1, true),
+  new THREE.MeshPhongMaterial({ color: 0x2a4a6b, transparent: true, opacity: 0.2, side: THREE.DoubleSide })
+);
+hull.rotation.z = Math.PI / 2;
+hull.rotation.x = 0.15;
+scene.add(hull);
 
 // Wireframe overlay
-const wireGeo = new THREE.CylinderGeometry(2.01, 2.01, 10, 6, 8, true);
-const wireMat = new THREE.MeshBasicMaterial({ color: 0x475569, wireframe: true, transparent: true, opacity: 0.3 });
-const wireframe = new THREE.Mesh(wireGeo, wireMat);
-wireframe.rotation.z = Math.PI / 2;
-scene.add(wireframe);
+const wire = new THREE.Mesh(
+  new THREE.CylinderGeometry(2.01, 2.01, 10, 8, 10, true),
+  new THREE.MeshBasicMaterial({ color: 0x475569, wireframe: true, transparent: true, opacity: 0.06 })
+);
+wire.rotation.z = Math.PI / 2;
+wire.rotation.x = 0.15;
+scene.add(wire);
 
 // End caps
-const capGeo = new THREE.CircleGeometry(2, 32);
-const capMat1 = new THREE.MeshPhongMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
-const capMat2 = new THREE.MeshPhongMaterial({ color: 0x1e293b, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
+for (const x of [5, -5]) {
+  const cap = new THREE.Mesh(
+    new THREE.CircleGeometry(2, 48),
+    new THREE.MeshPhongMaterial({ color: 0x1a1a2e, transparent: true, opacity: 0.35, side: THREE.DoubleSide })
+  );
+  cap.position.x = x;
+  cap.rotation.y = Math.PI / 2;
+  scene.add(cap);
+}
 
-const cap1 = new THREE.Mesh(capGeo, capMat1);
-cap1.position.x = 5;
-cap1.rotation.y = Math.PI / 2;
-scene.add(cap1);
-
-const cap2 = new THREE.Mesh(capGeo, capMat2);
-cap2.position.x = -5;
-cap2.rotation.y = Math.PI / 2;
-scene.add(cap2);
-
-// Ring structure (habitat ring)
-const ringGeo = new THREE.TorusGeometry(2.8, 0.08, 8, 32);
-const ringMat = new THREE.MeshPhongMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.5 });
-for (let i = 0; i < 3; i++) {
-  const ring = new THREE.Mesh(ringGeo, ringMat);
-  ring.position.x = -3 + i * 3;
+// Structural rings
+for (const x of [-3, 0, 3]) {
+  const ring = new THREE.Mesh(
+    new THREE.TorusGeometry(2.08, 0.03, 8, 48),
+    new THREE.MeshPhongMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.4 })
+  );
+  ring.position.x = x;
   ring.rotation.y = Math.PI / 2;
   scene.add(ring);
 }
 
-// Central axis line
-const axisGeo = new THREE.CylinderGeometry(0.02, 0.02, 14, 4);
-const axisMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.2 });
-const axis = new THREE.Mesh(axisGeo, axisMat);
+// Central axis
+const axis = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.012, 0.012, 12, 4),
+  new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.1 })
+);
 axis.rotation.z = Math.PI / 2;
 scene.add(axis);
 
 // Lighting
-const ambient = new THREE.AmbientLight(0x334155, 0.5);
-scene.add(ambient);
-const directional = new THREE.DirectionalLight(0xfbbf24, 0.8);
-directional.position.set(10, 5, 5);
-scene.add(directional);
-const point = new THREE.PointLight(0x3b82f6, 0.3, 30);
-point.position.set(-5, 3, 5);
-scene.add(point);
+scene.add(new THREE.AmbientLight(0x1e293b, 0.6));
+const sun = new THREE.DirectionalLight(0xfff4e0, 1.0);
+sun.position.set(10, 6, 8);
+scene.add(sun);
 
-// Scroll-based camera movement
+// Animation
 let scrollY = 0;
 window.addEventListener('scroll', () => { scrollY = window.scrollY; });
 
 function animate() {
   requestAnimationFrame(animate);
-
-  const t = Date.now() * 0.001;
-
-  // Rotate cylinder (slow, like real station)
-  cylinder.rotation.x = t * 0.15;
-  wireframe.rotation.x = t * 0.15;
-
-  // Scroll-based camera
-  const scrollFactor = scrollY / (document.body.scrollHeight - window.innerHeight || 1);
-  camera.position.y = 3 - scrollFactor * 6;
-  camera.position.z = 12 - scrollFactor * 4;
-  camera.lookAt(0, -scrollFactor * 2, 0);
-
-  // Subtle float
-  cylinder.position.y = Math.sin(t * 0.3) * 0.1;
-
+  hull.rotation.x += 0.001;
+  wire.rotation.x = hull.rotation.x;
+  const maxScroll = document.body.scrollHeight - window.innerHeight || 1;
+  const sf = Math.min(scrollY / maxScroll, 1);
+  camera.position.y = 3 - sf * 5;
+  camera.position.z = 16 - sf * 4;
+  camera.lookAt(0, -sf * 1.5, 0);
   renderer.render(scene, camera);
 }
 animate();
@@ -590,6 +617,13 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+reveals.forEach(el => revealObserver.observe(el));
 </script>
 </body>
 </html>

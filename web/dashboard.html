@@ -553,6 +553,75 @@ input[type="range"]::-webkit-slider-thumb {
         <div class="mass-grid" style="flex:1;" id="mass-items"></div>
       </div>
     </div>
+
+    <!-- Human Experience -->
+    <div class="panel">
+      <div class="panel-title">Human Experience</div>
+      <div class="panel-heading">Weight by Zone</div>
+      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.75rem;">
+        Your mass: <input type="number" id="human-mass" value="80" min="30" max="200" style="width:50px;background:var(--bg);border:1px solid var(--border);color:var(--gold);font-family:'Courier New',monospace;font-size:0.7rem;padding:2px 6px;border-radius:4px;text-align:center;"> kg
+      </div>
+      <div id="weight-table" style="font-family:'Courier New',monospace;font-size:0.7rem;"></div>
+      <div style="margin-top:1rem;font-size:0.65rem;color:var(--muted);line-height:1.6;">
+        At <span style="color:#8b5cf6">Transit Level</span> (0.5g) you could jump <span style="color:var(--gold)">2x higher</span>.<br>
+        At <span style="color:#f97316">Assembly</span> (0.125g) a person could <span style="color:var(--gold)">lift 8x their Earth capacity</span>.
+      </div>
+    </div>
+
+    <!-- Coriolis Daily Life -->
+    <div class="panel">
+      <div class="panel-title">Coriolis in Daily Life</div>
+      <div class="panel-heading">Felt Effects by Activity</div>
+      <div id="coriolis-table" style="font-family:'Courier New',monospace;font-size:0.7rem;"></div>
+      <div style="margin-top:1rem;font-size:0.65rem;color:var(--muted);line-height:1.6;">
+        Walking spinward: feel <span style="color:var(--gold)" id="spinward-delta">~1.5%</span> lighter.<br>
+        Walking anti-spinward: feel <span style="color:var(--gold)" id="antispinward-delta">~1.5%</span> heavier.<br>
+        Elevators must compensate for lateral force during radial transit.
+      </div>
+    </div>
+
+    <!-- ECLSS Life Support -->
+    <div class="panel panel-full">
+      <div class="panel-title">ECLSS Life Support</div>
+      <div class="panel-heading">Daily Resource Budget — <span style="color:var(--gold)" id="eclss-pop">1,000,000</span> residents</div>
+      <div class="mass-grid" id="eclss-items" style="margin-top:0;"></div>
+      <div style="margin-top:1rem;font-size:0.65rem;color:var(--muted);line-height:1.8;">
+        <span style="color:var(--gold);font-family:'Courier New',monospace;" id="eclss-forest-area">56 km²</span> of tropical forest equivalent needed for biological O₂ generation
+        (<span style="color:var(--muted)">~15 tonnes O₂/km²/day</span>).
+        Total atmospheric mass: <span style="color:var(--gold);font-family:'Courier New',monospace;" id="eclss-atm-mass">—</span>.
+        Water recycling must achieve <span style="color:var(--gold);font-family:'Courier New',monospace;">99.7%</span> recovery rate to stay sustainable.
+      </div>
+    </div>
+
+    <!-- Scale Comparison -->
+    <div class="panel panel-full">
+      <div class="panel-title">Scale Comparison</div>
+      <div class="panel-heading">Cooper Station vs Earth References</div>
+      <div id="scale-bars" style="margin-top:1rem;"></div>
+    </div>
+
+    <!-- Rotational Energy -->
+    <div class="panel">
+      <div class="panel-title">Energy</div>
+      <div class="panel-heading">Rotational Kinetic Energy</div>
+      <div id="energy-info" style="font-family:'Courier New',monospace;font-size:0.75rem;line-height:2;"></div>
+    </div>
+
+    <!-- Key Formulas -->
+    <div class="panel">
+      <div class="panel-title">Reference</div>
+      <div class="panel-heading">Key Equations</div>
+      <div style="font-family:'Courier New',monospace;font-size:0.7rem;line-height:2.2;color:var(--muted);">
+        <div>Centripetal gravity: <span style="color:var(--gold)">g(r) = ω²r</span></div>
+        <div>Angular velocity: <span style="color:var(--gold)">ω = √(g/R)</span></div>
+        <div>Coriolis accel: <span style="color:var(--gold)">a = 2ωv</span></div>
+        <div>Hoop stress: <span style="color:var(--gold)">σ = ρv²</span></div>
+        <div>Pressure gradient: <span style="color:var(--gold)">P(r) = P₀·exp(ω²r²M/2RT)</span></div>
+        <div>Moment of inertia: <span style="color:var(--gold)">I = ½mR²</span></div>
+        <div>Rim velocity: <span style="color:var(--gold)">v = ωR</span></div>
+        <div>Weight variation: <span style="color:var(--gold)">Δg/g = 2v/v<sub>rim</sub></span></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1347,6 +1416,236 @@ function drawZonesList() {
 }
 
 // =====================================================
+// NEW PANELS
+// =====================================================
+
+// Human Experience — Weight by Zone
+function drawWeightTable() {
+  const container = document.getElementById('weight-table');
+  const mass = parseFloat(document.getElementById('human-mass').value) || 80;
+  container.innerHTML = '';
+
+  const earthJump = 0.5; // avg human vertical jump on Earth (m)
+
+  const header = document.createElement('div');
+  header.style.cssText = 'display:grid;grid-template-columns:1fr 55px 65px 70px;gap:4px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border);';
+  header.innerHTML = `
+    <span style="color:var(--muted);font-size:0.55rem;letter-spacing:1px;">ZONE</span>
+    <span style="color:var(--muted);font-size:0.55rem;letter-spacing:1px;text-align:right;">GRAVITY</span>
+    <span style="color:var(--muted);font-size:0.55rem;letter-spacing:1px;text-align:right;">WEIGHT</span>
+    <span style="color:var(--muted);font-size:0.55rem;letter-spacing:1px;text-align:right;">JUMP</span>
+  `;
+  container.appendChild(header);
+
+  for (const z of ZONES) {
+    if (z.r > station.radius) continue;
+    const g = gravityG(z.r);
+    const weight = mass * gravityAt(z.r);
+    const jumpH = g > 0.01 ? earthJump / g : Infinity;
+    const jumpStr = g > 0.01 ? jumpH.toFixed(1) + ' m' : '∞';
+
+    const row = document.createElement('div');
+    row.style.cssText = 'display:grid;grid-template-columns:1fr 55px 65px 70px;gap:4px;padding:3px 0;';
+    row.innerHTML = `
+      <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${z.color};margin-right:6px;vertical-align:middle;"></span>${z.name}</span>
+      <span style="text-align:right;color:var(--gold)">${g.toFixed(2)}g</span>
+      <span style="text-align:right">${weight > 0.1 ? weight.toFixed(0) + ' N' : '~0 N'}</span>
+      <span style="text-align:right;color:var(--cyan)">${jumpStr}</span>
+    `;
+    container.appendChild(row);
+  }
+}
+
+// Coriolis in Daily Life — Felt Effects by Activity
+function drawCoriolisTable() {
+  const container = document.getElementById('coriolis-table');
+  container.innerHTML = '';
+
+  const w = omega();
+  const vRim = rimV();
+
+  const activities = [
+    { name: 'Walking', speed: 1.4, type: 'tangential' },
+    { name: 'Running', speed: 3.0, type: 'tangential' },
+    { name: 'Cycling', speed: 8.0, type: 'tangential' },
+    { name: 'Driving (60 km/h)', speed: 16.7, type: 'tangential' },
+    { name: 'Elevator (radial)', speed: 5.0, type: 'radial' },
+    { name: 'Thrown ball', speed: 20.0, type: 'radial' },
+  ];
+
+  const header = document.createElement('div');
+  header.style.cssText = 'display:grid;grid-template-columns:1fr 50px 80px 55px;gap:4px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border);';
+  header.innerHTML = `
+    <span style="color:var(--muted);font-size:0.55rem;letter-spacing:1px;">ACTIVITY</span>
+    <span style="color:var(--muted);font-size:0.55rem;letter-spacing:1px;text-align:right;">SPEED</span>
+    <span style="color:var(--muted);font-size:0.55rem;letter-spacing:1px;text-align:right;">CORIOLIS</span>
+    <span style="color:var(--muted);font-size:0.55rem;letter-spacing:1px;text-align:right;">Δg/g</span>
+  `;
+  container.appendChild(header);
+
+  for (const act of activities) {
+    const coriolisAccel = 2 * w * act.speed;
+    const deltaGG = act.type === 'tangential' ? (2 * act.speed / vRim * 100) : null;
+
+    const row = document.createElement('div');
+    row.style.cssText = 'display:grid;grid-template-columns:1fr 50px 80px 55px;gap:4px;padding:3px 0;';
+    row.innerHTML = `
+      <span>${act.name}</span>
+      <span style="text-align:right;color:var(--muted)">${act.speed}</span>
+      <span style="text-align:right;color:var(--gold)">${coriolisAccel.toFixed(4)} m/s²</span>
+      <span style="text-align:right;color:${deltaGG !== null && deltaGG > 2 ? 'var(--red)' : 'var(--cyan)'}">${deltaGG !== null ? deltaGG.toFixed(2) + '%' : 'lateral'}</span>
+    `;
+    container.appendChild(row);
+  }
+
+  // Update spinward/antispinward text
+  const walkDelta = (2 * 1.4 / vRim * 100).toFixed(1);
+  document.getElementById('spinward-delta').textContent = '~' + walkDelta + '%';
+  document.getElementById('antispinward-delta').textContent = '~' + walkDelta + '%';
+}
+
+// ECLSS Life Support — Daily Resource Budget
+function drawEclss() {
+  const pop = station.pop;
+  const container = document.getElementById('eclss-items');
+  container.innerHTML = '';
+
+  document.getElementById('eclss-pop').textContent = pop.toLocaleString();
+
+  // Per-person daily requirements (kg/day)  — NASA ECLSS data
+  const o2PP = 0.84;
+  const co2PP = 1.0;
+  const waterPP = 25;     // total (drinking + hygiene + process)
+  const foodPP = 1.8;
+
+  const totalO2 = o2PP * pop;
+  const totalCO2 = co2PP * pop;
+  const totalWater = waterPP * pop;
+  const totalFood = foodPP * pop;
+
+  // Forest area needed: ~15 tonnes O₂/km²/day (tropical forest)
+  const forestArea = totalO2 / 1000 / 15;
+  document.getElementById('eclss-forest-area').textContent = forestArea.toFixed(0) + ' km²';
+
+  // Atmospheric mass
+  const avgDensity = (densityAt(0) + densityAt(station.radius)) / 2;
+  const vol = internalVolume();
+  const atmoMass = avgDensity * vol;
+  document.getElementById('eclss-atm-mass').textContent = fmt(atmoMass / 1e9, 1) + ' Gt';
+
+  const items = [
+    { label: 'O₂ CONSUMPTION', value: totalO2, unit: 'kg/day', color: 'var(--accent)', per: o2PP + ' kg/person' },
+    { label: 'CO₂ PRODUCTION', value: totalCO2, unit: 'kg/day', color: 'var(--red)', per: co2PP + ' kg/person' },
+    { label: 'WATER USE', value: totalWater, unit: 'kg/day', color: 'var(--cyan)', per: waterPP + ' kg/person' },
+    { label: 'FOOD', value: totalFood, unit: 'kg/day', color: 'var(--green)', per: foodPP + ' kg/person' },
+  ];
+
+  for (const item of items) {
+    const div = document.createElement('div');
+    div.className = 'mass-item';
+    div.innerHTML = `
+      <div class="mass-value" style="color:${item.color}">${fmt(item.value, 0)} <span style="font-size:0.7rem;color:var(--muted)">${item.unit}</span></div>
+      <div class="mass-label">${item.label}</div>
+      <div class="mass-pct">${item.per}</div>
+    `;
+    container.appendChild(div);
+  }
+}
+
+// Scale Comparison — Station vs Earth References
+function drawScaleComparison() {
+  const container = document.getElementById('scale-bars');
+  container.innerHTML = '';
+
+  const habArea = habitableArea() / 1e6;
+
+  // Length comparisons (meters)
+  const lengths = [
+    { name: 'Cooper Station', value: station.length, color: 'var(--gold)' },
+    { name: 'Manhattan (length)', value: 21600, color: 'var(--accent)' },
+    { name: 'ISS', value: 109, color: 'var(--cyan)' },
+    { name: 'Suez Canal', value: 193300, color: 'var(--muted)' },
+  ];
+
+  // Area comparisons (km²)
+  const areas = [
+    { name: 'Cooper Station (habitable)', value: habArea, color: 'var(--gold)' },
+    { name: 'Manhattan', value: 59, color: 'var(--accent)' },
+    { name: 'Singapore', value: 733, color: 'var(--purple)' },
+    { name: 'Hong Kong', value: 1106, color: 'var(--cyan)' },
+  ];
+
+  // Length section
+  const lenDiv = document.createElement('div');
+  const maxLen = Math.max(...lengths.map(i => i.value));
+  lenDiv.innerHTML = '<div style="font-size:0.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Length</div>';
+  for (const item of lengths) {
+    const pct = Math.max(item.value / maxLen * 100, 2);
+    const label = item.value >= 1000 ? (item.value / 1000).toFixed(1) + ' km' : item.value + ' m';
+    const row = document.createElement('div');
+    row.className = 'material-row';
+    row.innerHTML = `
+      <div class="material-name" style="min-width:170px;">${item.name}</div>
+      <div class="material-bar-bg">
+        <div class="material-bar" style="width:${pct}%;background:${item.color};min-width:60px;">${label}</div>
+      </div>
+    `;
+    lenDiv.appendChild(row);
+  }
+  container.appendChild(lenDiv);
+
+  // Area section
+  const areaDiv = document.createElement('div');
+  areaDiv.style.marginTop = '1.5rem';
+  const maxArea = Math.max(...areas.map(i => i.value));
+  areaDiv.innerHTML = '<div style="font-size:0.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.75rem;">Habitable Area (km²)</div>';
+  for (const item of areas) {
+    const pct = Math.max(item.value / maxArea * 100, 2);
+    const row = document.createElement('div');
+    row.className = 'material-row';
+    row.innerHTML = `
+      <div class="material-name" style="min-width:170px;">${item.name}</div>
+      <div class="material-bar-bg">
+        <div class="material-bar" style="width:${pct}%;background:${item.color};min-width:60px;">${item.value.toFixed(0)} km²</div>
+      </div>
+    `;
+    areaDiv.appendChild(row);
+  }
+  container.appendChild(areaDiv);
+}
+
+// Rotational Kinetic Energy
+function drawEnergy() {
+  const container = document.getElementById('energy-info');
+  const mass = massBreakdown();
+  const w = omega();
+
+  // Cylindrical shell: I ≈ mR²
+  const I = mass.total * station.radius ** 2;
+  const KE = 0.5 * I * w ** 2;
+
+  // Reference energies (joules)
+  const hiroshima = 6.3e13;
+  const tsarBomba = 2.1e17;
+  const annualUS = 9.2e19;
+
+  const spinUpDays = KE / 1e9 / 86400; // at 1 GW
+
+  container.innerHTML = `
+    <div>Moment of inertia: <span style="color:var(--gold)">${I.toExponential(2)} kg·m²</span></div>
+    <div>Kinetic energy: <span style="color:var(--gold)">${KE.toExponential(2)} J</span></div>
+    <div style="margin-top:0.75rem;border-top:1px solid var(--border);padding-top:0.75rem;font-size:0.65rem;color:var(--muted);line-height:2;">
+      <div>= <span style="color:var(--accent)">${fmt(KE / hiroshima, 0)}</span> Hiroshima equivalents</div>
+      <div>= <span style="color:var(--accent)">${fmt(KE / tsarBomba, 0)}</span> Tsar Bomba equivalents</div>
+      <div>= <span style="color:var(--accent)">${(KE / annualUS).toFixed(1)}×</span> annual US energy use</div>
+    </div>
+    <div style="margin-top:0.75rem;font-size:0.6rem;color:var(--muted);">
+      Spin-up at 1 GW: <span style="color:var(--gold)">${fmt(spinUpDays, 0)} days</span> (<span style="color:var(--gold)">${(spinUpDays / 365).toFixed(1)} years</span>)
+    </div>
+  `;
+}
+
+// =====================================================
 // MOUSE INTERACTION
 // =====================================================
 document.getElementById('canvas-cross').addEventListener('mousemove', function(e) {
@@ -1394,6 +1693,9 @@ document.getElementById('ctrl-drop-h').addEventListener('input', function() {
   document.getElementById('drop-h-val').textContent = this.value + ' m';
   resetDrop();
 });
+document.getElementById('human-mass').addEventListener('input', function() {
+  drawWeightTable();
+});
 
 // =====================================================
 // MAIN UPDATE
@@ -1407,6 +1709,11 @@ function updateAll() {
   drawMaterials();
   drawMassBreakdown();
   drawZonesList();
+  drawWeightTable();
+  drawCoriolisTable();
+  drawEclss();
+  drawScaleComparison();
+  drawEnergy();
 }
 
 // Animate cross section particles
