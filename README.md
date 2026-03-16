@@ -196,5 +196,3 @@ For steel (ρ = 7800 kg/m³) at r = 4000m:
 MIT License — Build the future freely.
 
 ---
-
-*"Mankind was born on Earth. It was never meant to die here."*
