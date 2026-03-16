@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cooper Station — Engineering Dashboard</title>
+<meta name="description" content="Interactive engineering dashboard for Cooper Station O'Neill Cylinder space habitat.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='none' stroke='%233b82f6' stroke-width='4'/><ellipse cx='50' cy='50' rx='45' ry='15' fill='none' stroke='%23fbbf24' stroke-width='3'/><circle cx='50' cy='50' r='3' fill='%23fbbf24'/></svg>" type="image/svg+xml">
+<style>
+:root {
+  --bg: #06080d;
+  --bg2: #0b1120;
+  --surface: rgba(15,23,42,0.8);
+  --surface2: rgba(15,23,42,0.5);
+  --border: rgba(148,163,184,0.1);
+  --border-hover: rgba(59,130,246,0.4);
+  --text: #e2e8f0;
+  --muted: rgba(148,163,184,0.6);
+  --accent: #3b82f6;
+  --accent-dim: rgba(59,130,246,0.15);
+  --gold: #fbbf24;
+  --gold-dim: rgba(251,191,36,0.15);
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.15);
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.15);
+  --purple: #a855f7;
+  --cyan: #06b6d4;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.2); border-radius: 3px; }
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(6,8,13,0.9);
+  backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.header-logo {
+  width: 32px; height: 32px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.header-logo::after {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--gold);
+}
+.header-title {
+  font-family: 'Courier New', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.header-title span { color: var(--text); font-weight: 700; }
+.header-links { display: flex; gap: 1rem; align-items: center; }
+.header-links a {
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.header-links a:hover { border-color: var(--accent); color: var(--accent); }
+.live-dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* Container */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Controls Bar */
+.controls-bar {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 180px;
+}
+.control-label {
+  font-family: 'Courier New', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+}
+.control-value {
+  color: var(--gold);
+  font-weight: 700;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(59,130,246,0.5);
+}
+
+/* Stats Row */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.stat-card:hover::before { opacity: 1; }
+.stat-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+.stat-num {
+  font-family: 'Courier New', monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.2;
+}
+.stat-unit {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+.stat-label {
+  font-family: 'Courier New', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+/* Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: border-color 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.panel:hover { border-color: var(--border-hover); }
+.panel-full { grid-column: 1 / -1; }
+.panel-title {
+  font-family: 'Courier New', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+.panel-heading {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.panel canvas {
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* Cross section specific */
+.cross-section-info {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: rgba(6,8,13,0.9);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.cross-section-info.visible { opacity: 1; }
+
+/* Coriolis controls */
+.sim-controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.sim-btn {
+  font-family: 'Courier New', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sim-btn:hover { background: var(--accent); color: #fff; }
+.sim-btn.active { background: var(--accent); color: #fff; }
+
+/* Material bars */
+.material-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+.material-name {
+  font-family: 'Courier New', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  min-width: 140px;
+  text-align: right;
+}
+.material-bar-bg {
+  flex: 1;
+  height: 24px;
+  background: rgba(148,163,184,0.05);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.material-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.9);
+  min-width: 40px;
+}
+.sf-badge {
+  font-family: 'Courier New', monospace;
+  font-size: 0.6rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  min-width: 50px;
+  text-align: center;
+}
+.sf-ok { background: var(--green-dim); color: var(--green); }
+.sf-warn { background: var(--gold-dim); color: var(--gold); }
+.sf-fail { background: var(--red-dim); color: var(--red); }
+
+/* Mass breakdown */
+.mass-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.mass-item {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(148,163,184,0.03);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.mass-value {
+  font-family: 'Courier New', monospace;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.mass-label {
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+  letter-spacing: 1px;
+}
+.mass-pct {
+  font-family: 'Courier New', monospace;
+  font-size: 0.6rem;
+  color: var(--accent);
+  margin-top: 0.25rem;
+}
+
+/* Gravity zones legend */
+.zones-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+.zone-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.zone-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.zone-g {
+  font-family: 'Courier New', monospace;
+  color: var(--gold);
+  margin-left: auto;
+}
+
+/* Footer */
+.dash-footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.65rem;
+  color: rgba(148,163,184,0.3);
+  font-family: 'Courier New', monospace;
+  border-top: 1px solid var(--border);
+  margin-top: 1rem;
+}
+.dash-footer a { color: var(--accent); text-decoration: none; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .controls-bar { flex-direction: column; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .header { padding: 0.75rem 1rem; }
+  .container { padding: 1rem; }
+  .zones-list { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo"></div>
+    <div class="header-title"><span>Cooper Station</span> &mdash; Engineering Dashboard</div>
+  </div>
+  <div class="header-links">
+    <span style="font-family:'Courier New',monospace;font-size:0.6rem;color:var(--muted);"><span class="live-dot"></span>LIVE PHYSICS</span>
+    <a href="index.html">Home</a>
+    <a href="https://github.com/zheimr/cooper-station">GitHub</a>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Station Controls -->
+  <div class="controls-bar">
+    <div style="font-family:'Courier New',monospace;font-size:0.6rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;min-width:120px;">Station Config</div>
+    <div class="control-group">
+      <div class="control-label">Radius <span class="control-value" id="ctrl-radius-val">4,000 m</span></div>
+      <input type="range" id="ctrl-radius" min="500" max="8000" value="4000" step="100">
+    </div>
+    <div class="control-group">
+      <div class="control-label">Length <span class="control-value" id="ctrl-length-val">32,000 m</span></div>
+      <input type="range" id="ctrl-length" min="5000" max="50000" value="32000" step="1000">
+    </div>
+    <div class="control-group">
+      <div class="control-label">Target Gravity <span class="control-value" id="ctrl-gravity-val">9.81 m/s²</span></div>
+      <input type="range" id="ctrl-gravity" min="1" max="15" value="9.81" step="0.01">
+    </div>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="stat-omega">0.0495 <span class="stat-unit">rad/s</span></div>
+      <div class="stat-label">Angular Velocity (ω)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-rpm">0.473 <span class="stat-unit">RPM</span></div>
+      <div class="stat-label">Rotation Rate</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-period">126.9 <span class="stat-unit">sec</span></div>
+      <div class="stat-label">Rotation Period</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-rimv">198.1 <span class="stat-unit">m/s</span></div>
+      <div class="stat-label">Rim Velocity</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-area">402 <span class="stat-unit">km²</span></div>
+      <div class="stat-label">Habitable Area</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-volume">1,608 <span class="stat-unit">km³</span></div>
+      <div class="stat-label">Internal Volume</div>
+    </div>
+  </div>
+
+  <!-- Main Dashboard Grid -->
+  <div class="dashboard-grid">
+    <!-- Cross Section View -->
+    <div class="panel">
+      <div class="panel-title">Cross Section</div>
+      <div class="panel-heading">Gravity Zone Map</div>
+      <canvas id="canvas-cross" height="420"></canvas>
+      <div class="cross-section-info" id="cross-info">
+        <div>Radius: <span id="cross-r">—</span></div>
+        <div>Gravity: <span id="cross-g" style="color:var(--gold)">—</span></div>
+        <div>Zone: <span id="cross-zone">—</span></div>
+      </div>
+      <div class="zones-list" id="zones-list"></div>
+    </div>
+
+    <!-- Gravity Profile -->
+    <div class="panel">
+      <div class="panel-title">Gravity Profile</div>
+      <div class="panel-heading">g vs Radius</div>
+      <canvas id="canvas-gravity" height="420"></canvas>
+      <div style="margin-top:0.75rem;font-size:0.7rem;color:var(--muted);line-height:1.6;">
+        Centripetal gravity scales linearly: <span style="color:var(--gold);font-family:'Courier New',monospace;">g(r) = ω²r</span>.
+        A 50m building at the rim experiences <span style="color:var(--gold);font-family:'Courier New',monospace;" id="building-gradient">~1.25%</span> gravity difference top-to-bottom.
+      </div>
+    </div>
+
+    <!-- Coriolis Drop Simulator -->
+    <div class="panel">
+      <div class="panel-title">Coriolis Simulator</div>
+      <div class="panel-heading">Drop Trajectory</div>
+      <canvas id="canvas-coriolis" height="340"></canvas>
+      <div class="sim-controls">
+        <button class="sim-btn" id="btn-drop" onclick="startDrop()">DROP BALL</button>
+        <button class="sim-btn" id="btn-reset" onclick="resetDrop()">RESET</button>
+        <div class="control-group" style="flex:1;min-width:140px;">
+          <div class="control-label">Drop Height <span class="control-value" id="drop-h-val">2.0 m</span></div>
+          <input type="range" id="ctrl-drop-h" min="0.5" max="20" value="2" step="0.5">
+        </div>
+        <div style="font-family:'Courier New',monospace;font-size:0.65rem;color:var(--muted);">
+          Deflection: <span style="color:var(--gold)" id="deflection-val">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atmosphere Profile -->
+    <div class="panel">
+      <div class="panel-title">Atmosphere</div>
+      <div class="panel-heading">Pressure & Density Profile</div>
+      <canvas id="canvas-atmo" height="340"></canvas>
+      <div style="margin-top:0.75rem;display:flex;gap:1.5rem;font-size:0.65rem;flex-wrap:wrap;">
+        <div><span style="display:inline-block;width:10px;height:10px;background:var(--accent);border-radius:2px;margin-right:4px;vertical-align:middle;"></span><span style="color:var(--muted)">Pressure (kPa)</span></div>
+        <div><span style="display:inline-block;width:10px;height:10px;background:var(--cyan);border-radius:2px;margin-right:4px;vertical-align:middle;"></span><span style="color:var(--muted)">Density (kg/m³)</span></div>
+        <div style="color:var(--muted);margin-left:auto;">Rim/Axis ratio: <span style="color:var(--gold);font-family:'Courier New',monospace;" id="pressure-ratio">~1.26</span></div>
+      </div>
+    </div>
+
+    <!-- Structural Analysis -->
+    <div class="panel panel-full">
+      <div class="panel-title">Structural Analysis</div>
+      <div class="panel-heading">Material Comparison — Hoop Stress Safety Factor</div>
+      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:1rem;">
+        Hoop stress: <span style="color:var(--gold);font-family:'Courier New',monospace;" id="hoop-stress-val">σ = ρv² = 305 MPa</span> (for steel at rim velocity).
+        Safety factor 2.0 required for structural adequacy.
+      </div>
+      <div id="materials-chart"></div>
+    </div>
+
+    <!-- Mass Breakdown -->
+    <div class="panel panel-full">
+      <div class="panel-title">Mass Budget</div>
+      <div class="panel-heading">Station Mass Breakdown</div>
+      <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;">
+        <canvas id="canvas-mass" width="200" height="200" style="width:200px;height:200px;flex-shrink:0;"></canvas>
+        <div class="mass-grid" style="flex:1;" id="mass-items"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dash-footer">
+  Cooper Station Engineering Dashboard — Real-time physics calculations<br>
+  <a href="https://github.com/zheimr/cooper-station">github.com/zheimr/cooper-station</a> — MIT License
+</div>
+
+<script>
+// =====================================================
+// PHYSICS ENGINE (mirrors Rust engine exactly)
+// =====================================================
+const PI = Math.PI;
+const R_GAS = 8.314;
+const MEAN_MOLAR_MASS = 0.0296;
+const TEMP = 293;
+
+const ZONES = [
+  { name: 'Residential Rim', r: 4000, color: '#fbbf24' },
+  { name: 'Parks & Recreation', r: 3500, color: '#22c55e' },
+  { name: 'Light Commercial', r: 3000, color: '#3b82f6' },
+  { name: 'Transit Level', r: 2000, color: '#8b5cf6' },
+  { name: 'Manufacturing', r: 1000, color: '#ec4899' },
+  { name: 'Assembly', r: 500, color: '#f97316' },
+  { name: 'Zero-G Axis', r: 0, color: '#06b6d4' },
+];
+
+const MATERIALS = [
+  { name: 'Steel (A36)', density: 7800, yield: 250e6, ult: 400e6, trl: 9, color: '#94a3b8' },
+  { name: 'Steel (High-Str)', density: 7800, yield: 690e6, ult: 760e6, trl: 9, color: '#64748b' },
+  { name: 'Ti-6Al-4V', density: 4430, yield: 880e6, ult: 950e6, trl: 8, color: '#a855f7' },
+  { name: 'CFRP Composite', density: 1600, yield: 1500e6, ult: 2500e6, trl: 6, color: '#3b82f6' },
+  { name: 'CNT (theoretical)', density: 1400, yield: 10000e6, ult: 60000e6, trl: 3, color: '#22c55e' },
+];
+
+let station = { radius: 4000, length: 32000, target_g: 9.81, pressure: 50650, pop: 1000000 };
+
+function omega() { return Math.sqrt(station.target_g / station.radius); }
+function rpm() { return omega() * 60 / (2 * PI); }
+function period() { return 2 * PI / omega(); }
+function rimV() { return omega() * station.radius; }
+function gravityAt(r) { return omega() ** 2 * r; }
+function gravityG(r) { return gravityAt(r) / 9.81; }
+
+function pressureAt(r) {
+  const w = omega();
+  const expRim = w**2 * station.radius**2 * MEAN_MOLAR_MASS / (2 * R_GAS * TEMP);
+  const pAxis = station.pressure / Math.exp(expRim);
+  const expR = w**2 * r**2 * MEAN_MOLAR_MASS / (2 * R_GAS * TEMP);
+  return pAxis * Math.exp(expR);
+}
+
+function densityAt(r) {
+  return pressureAt(r) * MEAN_MOLAR_MASS / (R_GAS * TEMP);
+}
+
+function pressureRatio() {
+  const w = omega();
+  return Math.exp(w**2 * station.radius**2 * MEAN_MOLAR_MASS / (2 * R_GAS * TEMP));
+}
+
+function hoopStress(mat) { return mat.density * rimV() ** 2; }
+function safetyFactor(mat) { return mat.yield / hoopStress(mat); }
+
+function massBreakdown() {
+  const sa = 2 * PI * station.radius * station.length;
+  const vol = PI * station.radius**2 * station.length;
+  const shell = 7800 * sa * 8;
+  const shield = 1500 * sa * 6;
+  const substrate = 1300 * (sa / 2) * 2;
+  const atmo = 0.6 * vol;
+  const water = 5e11;
+  const total = shell + shield + substrate + atmo + water;
+  return { shell, shield, substrate, atmo, water, total };
+}
+
+function habitableArea() { return PI * station.radius * station.length; }
+function internalVolume() { return PI * station.radius**2 * station.length; }
+
+function getZoneName(r) {
+  const maxR = station.radius;
+  if (r <= 0) return 'Zero-G Axis';
+  for (const z of ZONES) {
+    const scaledR = z.r / 4000 * maxR;
+    if (r >= scaledR - maxR * 0.05) return z.name;
+  }
+  return 'Interstitial';
+}
+
+// =====================================================
+// DROP SIMULATION
+// =====================================================
+let dropState = null;
+let dropTrail = [];
+let dropAnimId = null;
+
+function simulateDrop(dropHeight) {
+  const w = omega();
+  const initR = station.radius - dropHeight;
+  const gLocal = w**2 * initR;
+  const fallTime = Math.sqrt(2 * dropHeight / gLocal);
+  const steps = 200;
+  const dt = fallTime / steps;
+
+  let r = initR, vr = 0, tang = 0;
+  const trail = [];
+
+  for (let i = 0; i <= steps; i++) {
+    trail.push({ t: i * dt, r, tang, fallen: station.radius - r });
+    const gr = w**2 * r;
+    vr += gr * dt;
+    const ac = 2 * w * vr;
+    tang += ac * dt * dt * 0.5;
+    r += vr * dt;
+    if (r >= station.radius) {
+      trail.push({ t: (i + 1) * dt, r: station.radius, tang, fallen: dropHeight });
+      break;
+    }
+  }
+  return trail;
+}
+
+// =====================================================
+// RENDERING
+// =====================================================
+function fmt(n, d = 1) {
+  if (Math.abs(n) >= 1e12) return (n / 1e12).toFixed(d) + ' T';
+  if (Math.abs(n) >= 1e9) return (n / 1e9).toFixed(d) + ' B';
+  if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(d) + ' M';
+  return n.toLocaleString('en-US', { maximumFractionDigits: d });
+}
+
+function updateStats() {
+  const w = omega();
+  document.getElementById('stat-omega').innerHTML = `${w.toFixed(4)} <span class="stat-unit">rad/s</span>`;
+  document.getElementById('stat-rpm').innerHTML = `${rpm().toFixed(3)} <span class="stat-unit">RPM</span>`;
+  document.getElementById('stat-period').innerHTML = `${period().toFixed(1)} <span class="stat-unit">sec</span>`;
+  document.getElementById('stat-rimv').innerHTML = `${rimV().toFixed(1)} <span class="stat-unit">m/s</span>`;
+  const areaKm2 = habitableArea() / 1e6;
+  document.getElementById('stat-area').innerHTML = `${areaKm2.toFixed(0)} <span class="stat-unit">km²</span>`;
+  const volKm3 = internalVolume() / 1e9;
+  document.getElementById('stat-volume').innerHTML = `${fmt(volKm3, 0)} <span class="stat-unit">km³</span>`;
+
+  // Building gradient
+  const gBase = gravityAt(station.radius);
+  const gTop = gravityAt(station.radius - 50);
+  const pct = ((gBase - gTop) / gBase * 100);
+  document.getElementById('building-gradient').textContent = `~${pct.toFixed(2)}%`;
+
+  // Pressure ratio
+  document.getElementById('pressure-ratio').textContent = `~${pressureRatio().toFixed(2)}`;
+
+  // Hoop stress
+  const steelStress = hoopStress(MATERIALS[0]);
+  document.getElementById('hoop-stress-val').textContent = `σ = ρv² = ${(steelStress/1e6).toFixed(0)} MPa`;
+}
+
+function updateControls() {
+  document.getElementById('ctrl-radius-val').textContent = station.radius.toLocaleString() + ' m';
+  document.getElementById('ctrl-length-val').textContent = station.length.toLocaleString() + ' m';
+  document.getElementById('ctrl-gravity-val').textContent = station.target_g.toFixed(2) + ' m/s²';
+}
+
+// Cross Section
+function drawCrossSection() {
+  const canvas = document.getElementById('canvas-cross');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const w = rect.width - 48;
+  canvas.width = w * 2;
+  canvas.height = 420 * 2;
+  canvas.style.width = w + 'px';
+  canvas.style.height = '420px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+
+  const cx = w / 2;
+  const cy = 210;
+  const maxR = Math.min(cx - 30, 180);
+
+  ctx.clearRect(0, 0, w, 420);
+
+  // Draw gravity gradient rings
+  for (let i = 100; i >= 0; i--) {
+    const frac = i / 100;
+    const r = maxR * frac;
+    const g = frac; // linear
+    // Color: blue at center -> gold at rim
+    const hue = 200 - g * 160; // 200 (blue) to 40 (gold)
+    const sat = 60 + g * 30;
+    const light = 15 + g * 25;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, 2 * PI);
+    ctx.fillStyle = `hsla(${hue}, ${sat}%, ${light}%, 0.6)`;
+    ctx.fill();
+  }
+
+  // Station rim glow
+  ctx.beginPath();
+  ctx.arc(cx, cy, maxR, 0, 2 * PI);
+  ctx.strokeStyle = 'rgba(251,191,36,0.6)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Outer glow
+  const glow = ctx.createRadialGradient(cx, cy, maxR - 5, cx, cy, maxR + 15);
+  glow.addColorStop(0, 'rgba(251,191,36,0.2)');
+  glow.addColorStop(1, 'rgba(251,191,36,0)');
+  ctx.beginPath();
+  ctx.arc(cx, cy, maxR + 15, 0, 2 * PI);
+  ctx.fillStyle = glow;
+  ctx.fill();
+
+  // Zone circles
+  const sortedZones = [...ZONES].sort((a, b) => b.r - a.r);
+  for (const z of sortedZones) {
+    if (z.r === 0) continue;
+    const scaledR = (z.r / 4000) * maxR * (4000 / station.radius);
+    if (scaledR > maxR || scaledR < 0) continue;
+    ctx.beginPath();
+    ctx.arc(cx, cy, scaledR, 0, 2 * PI);
+    ctx.strokeStyle = z.color + '60';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Label
+    const labelAngle = -PI / 4;
+    const lx = cx + scaledR * Math.cos(labelAngle) + 4;
+    const ly = cy + scaledR * Math.sin(labelAngle) - 4;
+    ctx.font = '9px "Courier New", monospace';
+    ctx.fillStyle = z.color + 'cc';
+    ctx.fillText(z.name, lx, ly);
+  }
+
+  // Central axis dot
+  ctx.beginPath();
+  ctx.arc(cx, cy, 3, 0, 2 * PI);
+  ctx.fillStyle = '#06b6d4';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(cx, cy, 8, 0, 2 * PI);
+  ctx.strokeStyle = 'rgba(6,182,212,0.3)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Axis label
+  ctx.font = '9px "Courier New", monospace';
+  ctx.fillStyle = '#06b6d4cc';
+  ctx.textAlign = 'center';
+  ctx.fillText('0g', cx, cy + 20);
+  ctx.textAlign = 'left';
+
+  // Rim label
+  ctx.fillStyle = '#fbbf24cc';
+  ctx.fillText(`${gravityG(station.radius).toFixed(2)}g`, cx + maxR + 8, cy + 4);
+
+  // Scale bar
+  const scaleLen = maxR * 0.3;
+  const scaleMeters = Math.round(station.radius * 0.3 / 100) * 100;
+  ctx.beginPath();
+  ctx.moveTo(20, 400);
+  ctx.lineTo(20 + scaleLen, 400);
+  ctx.strokeStyle = 'rgba(148,163,184,0.3)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(20, 396); ctx.lineTo(20, 404);
+  ctx.moveTo(20 + scaleLen, 396); ctx.lineTo(20 + scaleLen, 404);
+  ctx.stroke();
+  ctx.font = '9px "Courier New", monospace';
+  ctx.fillStyle = 'rgba(148,163,184,0.5)';
+  ctx.fillText(`${scaleMeters.toLocaleString()} m`, 20, 393);
+
+  // Floating particles near axis
+  const now = Date.now() * 0.001;
+  for (let i = 0; i < 15; i++) {
+    const angle = now * 0.2 + i * 2.1;
+    const dist = 10 + Math.sin(now * 0.5 + i) * 8;
+    const px = cx + Math.cos(angle) * dist;
+    const py = cy + Math.sin(angle) * dist;
+    const size = 1 + Math.sin(now + i) * 0.5;
+    ctx.beginPath();
+    ctx.arc(px, py, size, 0, 2 * PI);
+    ctx.fillStyle = `rgba(6,182,212,${0.2 + Math.sin(now + i) * 0.15})`;
+    ctx.fill();
+  }
+
+  // Store for mouse interaction
+  canvas._cx = cx;
+  canvas._cy = cy;
+  canvas._maxR = maxR;
+}
+
+// Gravity Profile Chart
+function drawGravityChart() {
+  const canvas = document.getElementById('canvas-gravity');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const w = rect.width - 48;
+  canvas.width = w * 2;
+  canvas.height = 420 * 2;
+  canvas.style.width = w + 'px';
+  canvas.style.height = '420px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+
+  const pad = { top: 20, right: 20, bottom: 40, left: 55 };
+  const cw = w - pad.left - pad.right;
+  const ch = 420 - pad.top - pad.bottom;
+
+  ctx.clearRect(0, 0, w, 420);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(148,163,184,0.08)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 10; i++) {
+    const y = pad.top + (ch / 10) * i;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(pad.left + cw, y);
+    ctx.stroke();
+  }
+  for (let i = 0; i <= 8; i++) {
+    const x = pad.left + (cw / 8) * i;
+    ctx.beginPath();
+    ctx.moveTo(x, pad.top);
+    ctx.lineTo(x, pad.top + ch);
+    ctx.stroke();
+  }
+
+  // Axis labels
+  ctx.font = '9px "Courier New", monospace';
+  ctx.fillStyle = 'rgba(148,163,184,0.5)';
+  ctx.textAlign = 'right';
+  const maxG = station.target_g / 9.81;
+  for (let i = 0; i <= 10; i++) {
+    const val = maxG * (10 - i) / 10;
+    const y = pad.top + (ch / 10) * i;
+    ctx.fillText(val.toFixed(1) + 'g', pad.left - 8, y + 3);
+  }
+  ctx.textAlign = 'center';
+  for (let i = 0; i <= 4; i++) {
+    const val = (station.radius / 4) * i;
+    const x = pad.left + (cw / 4) * i;
+    ctx.fillText(fmt(val, 0) + 'm', x, pad.top + ch + 20);
+  }
+
+  // Y-axis title
+  ctx.save();
+  ctx.translate(12, pad.top + ch / 2);
+  ctx.rotate(-PI / 2);
+  ctx.textAlign = 'center';
+  ctx.font = '9px "Courier New", monospace';
+  ctx.fillStyle = 'rgba(148,163,184,0.4)';
+  ctx.fillText('Gravity (g)', 0, 0);
+  ctx.restore();
+
+  // X-axis title
+  ctx.textAlign = 'center';
+  ctx.fillText('Radius from axis', pad.left + cw / 2, pad.top + ch + 35);
+
+  // Gradient fill under line
+  const grad = ctx.createLinearGradient(pad.left, pad.top + ch, pad.left + cw, pad.top);
+  grad.addColorStop(0, 'rgba(59,130,246,0.02)');
+  grad.addColorStop(1, 'rgba(251,191,36,0.15)');
+  ctx.beginPath();
+  ctx.moveTo(pad.left, pad.top + ch);
+  for (let i = 0; i <= 100; i++) {
+    const r = (station.radius / 100) * i;
+    const g = gravityG(r);
+    const x = pad.left + (cw / 100) * i;
+    const y = pad.top + ch - (g / maxG) * ch;
+    ctx.lineTo(x, y);
+  }
+  ctx.lineTo(pad.left + cw, pad.top + ch);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Main line
+  ctx.beginPath();
+  for (let i = 0; i <= 100; i++) {
+    const r = (station.radius / 100) * i;
+    const g = gravityG(r);
+    const x = pad.left + (cw / 100) * i;
+    const y = pad.top + ch - (g / maxG) * ch;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = 'rgba(251,191,36,0.8)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Zone markers
+  for (const z of ZONES) {
+    const scaledR = z.r;
+    if (scaledR > station.radius) continue;
+    const g = gravityG(scaledR);
+    const x = pad.left + (scaledR / station.radius) * cw;
+    const y = pad.top + ch - (g / maxG) * ch;
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, 2 * PI);
+    ctx.fillStyle = z.color;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, 7, 0, 2 * PI);
+    ctx.strokeStyle = z.color + '40';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+}
+
+// Coriolis Drop
+function drawCoriolis() {
+  const canvas = document.getElementById('canvas-coriolis');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const w = rect.width - 48;
+  canvas.width = w * 2;
+  canvas.height = 340 * 2;
+  canvas.style.width = w + 'px';
+  canvas.style.height = '340px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+
+  const pad = { top: 30, right: 30, bottom: 40, left: 60 };
+  const cw = w - pad.left - pad.right;
+  const ch = 340 - pad.top - pad.bottom;
+
+  ctx.clearRect(0, 0, w, 340);
+
+  const dropH = parseFloat(document.getElementById('ctrl-drop-h').value);
+  const trail = simulateDrop(dropH);
+  const maxDeflection = trail.length > 0 ? Math.max(Math.abs(trail[trail.length - 1].tang), 0.01) : 0.01;
+  const deflectionScale = cw * 0.4 / maxDeflection;
+
+  // Grid
+  ctx.strokeStyle = 'rgba(148,163,184,0.06)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) {
+    const y = pad.top + (ch / 5) * i;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y); ctx.stroke();
+  }
+
+  // Labels
+  ctx.font = '9px "Courier New", monospace';
+  ctx.fillStyle = 'rgba(148,163,184,0.5)';
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= 5; i++) {
+    const val = (dropH / 5) * i;
+    const y = pad.top + (ch / 5) * i;
+    ctx.fillText(val.toFixed(1) + 'm', pad.left - 8, y + 3);
+  }
+  ctx.textAlign = 'center';
+  ctx.fillText('Fall Distance', 12, pad.top + ch / 2);
+  ctx.fillText('Tangential Deflection', pad.left + cw / 2, 340 - 5);
+
+  // Center line (Earth reference - straight drop)
+  const earthX = pad.left + cw * 0.3;
+  ctx.beginPath();
+  ctx.moveTo(earthX, pad.top);
+  ctx.lineTo(earthX, pad.top + ch);
+  ctx.strokeStyle = 'rgba(148,163,184,0.15)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.font = '8px "Courier New", monospace';
+  ctx.fillStyle = 'rgba(148,163,184,0.3)';
+  ctx.textAlign = 'center';
+  ctx.fillText('Earth (no deflection)', earthX, pad.top - 8);
+
+  // Rotating frame label
+  ctx.fillStyle = 'rgba(251,191,36,0.5)';
+  ctx.fillText('Cooper Station', earthX + cw * 0.3, pad.top - 8);
+
+  // Trail
+  if (dropTrail.length > 1) {
+    // Glow effect
+    ctx.beginPath();
+    for (let i = 0; i < dropTrail.length; i++) {
+      const pt = dropTrail[i];
+      const x = earthX + pt.tang * deflectionScale;
+      const y = pad.top + (pt.fallen / dropH) * ch;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(251,191,36,0.15)';
+    ctx.lineWidth = 6;
+    ctx.stroke();
+
+    // Main trail
+    ctx.beginPath();
+    for (let i = 0; i < dropTrail.length; i++) {
+      const pt = dropTrail[i];
+      const x = earthX + pt.tang * deflectionScale;
+      const y = pad.top + (pt.fallen / dropH) * ch;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(251,191,36,0.8)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  // Ball
+  if (dropState) {
+    const pt = dropTrail[dropState.frame] || dropTrail[dropTrail.length - 1];
+    const x = earthX + pt.tang * deflectionScale;
+    const y = pad.top + (pt.fallen / dropH) * ch;
+
+    // Glow
+    const ballGlow = ctx.createRadialGradient(x, y, 0, x, y, 12);
+    ballGlow.addColorStop(0, 'rgba(251,191,36,0.4)');
+    ballGlow.addColorStop(1, 'rgba(251,191,36,0)');
+    ctx.beginPath();
+    ctx.arc(x, y, 12, 0, 2 * PI);
+    ctx.fillStyle = ballGlow;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * PI);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fill();
+  }
+
+  // Deflection annotation
+  if (dropTrail.length > 1) {
+    const last = dropTrail[dropTrail.length - 1];
+    const finalDefl = last.tang;
+    document.getElementById('deflection-val').textContent =
+      (finalDefl * 1000).toFixed(2) + ' mm (' + finalDefl.toFixed(4) + ' m)';
+
+    // Arrow showing deflection
+    const lastX = earthX + last.tang * deflectionScale;
+    const lastY = pad.top + ch;
+    if (Math.abs(last.tang) > 0.0001) {
+      ctx.beginPath();
+      ctx.moveTo(earthX, lastY - 15);
+      ctx.lineTo(lastX, lastY - 15);
+      ctx.strokeStyle = 'rgba(239,68,68,0.5)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([2, 2]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.font = '8px "Courier New", monospace';
+      ctx.fillStyle = '#ef4444';
+      ctx.textAlign = 'center';
+      ctx.fillText((finalDefl * 1000).toFixed(1) + 'mm', (earthX + lastX) / 2, lastY - 20);
+    }
+  }
+}
+
+function startDrop() {
+  const dropH = parseFloat(document.getElementById('ctrl-drop-h').value);
+  const fullTrail = simulateDrop(dropH);
+  dropTrail = [];
+  dropState = { frame: 0, total: fullTrail.length, fullTrail };
+  if (dropAnimId) cancelAnimationFrame(dropAnimId);
+
+  function animate() {
+    if (dropState.frame < dropState.total) {
+      dropTrail.push(dropState.fullTrail[dropState.frame]);
+      dropState.frame++;
+      drawCoriolis();
+      dropAnimId = requestAnimationFrame(animate);
+    } else {
+      dropState = null;
+    }
+  }
+  animate();
+}
+
+function resetDrop() {
+  if (dropAnimId) cancelAnimationFrame(dropAnimId);
+  dropState = null;
+  dropTrail = [];
+  document.getElementById('deflection-val').textContent = '—';
+  drawCoriolis();
+}
+
+// Atmosphere Profile
+function drawAtmosphere() {
+  const canvas = document.getElementById('canvas-atmo');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const w = rect.width - 48;
+  canvas.width = w * 2;
+  canvas.height = 340 * 2;
+  canvas.style.width = w + 'px';
+  canvas.style.height = '340px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+
+  const pad = { top: 20, right: 55, bottom: 40, left: 55 };
+  const cw = w - pad.left - pad.right;
+  const ch = 340 - pad.top - pad.bottom;
+
+  ctx.clearRect(0, 0, w, 340);
+
+  // Compute ranges
+  const pMin = pressureAt(0);
+  const pMax = pressureAt(station.radius);
+  const dMin = densityAt(0);
+  const dMax = densityAt(station.radius);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(148,163,184,0.06)';
+  for (let i = 0; i <= 5; i++) {
+    const y = pad.top + (ch / 5) * i;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y); ctx.stroke();
+  }
+
+  // Pressure curve (left axis)
+  ctx.beginPath();
+  for (let i = 0; i <= 100; i++) {
+    const r = (station.radius / 100) * i;
+    const p = pressureAt(r);
+    const x = pad.left + (i / 100) * cw;
+    const y = pad.top + ch - ((p - pMin) / (pMax - pMin)) * ch;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = 'rgba(59,130,246,0.8)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Pressure fill
+  ctx.beginPath();
+  ctx.moveTo(pad.left, pad.top + ch);
+  for (let i = 0; i <= 100; i++) {
+    const r = (station.radius / 100) * i;
+    const p = pressureAt(r);
+    const x = pad.left + (i / 100) * cw;
+    const y = pad.top + ch - ((p - pMin) / (pMax - pMin)) * ch;
+    ctx.lineTo(x, y);
+  }
+  ctx.lineTo(pad.left + cw, pad.top + ch);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(59,130,246,0.05)';
+  ctx.fill();
+
+  // Density curve (right axis)
+  ctx.beginPath();
+  for (let i = 0; i <= 100; i++) {
+    const r = (station.radius / 100) * i;
+    const d = densityAt(r);
+    const x = pad.left + (i / 100) * cw;
+    const y = pad.top + ch - ((d - dMin) / (dMax - dMin)) * ch;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = 'rgba(6,182,212,0.8)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Left axis labels (pressure)
+  ctx.font = '9px "Courier New", monospace';
+  ctx.textAlign = 'right';
+  ctx.fillStyle = 'rgba(59,130,246,0.6)';
+  for (let i = 0; i <= 5; i++) {
+    const val = pMin + (pMax - pMin) * (5 - i) / 5;
+    const y = pad.top + (ch / 5) * i;
+    ctx.fillText((val / 1000).toFixed(1), pad.left - 8, y + 3);
+  }
+
+  // Right axis labels (density)
+  ctx.textAlign = 'left';
+  ctx.fillStyle = 'rgba(6,182,212,0.6)';
+  for (let i = 0; i <= 5; i++) {
+    const val = dMin + (dMax - dMin) * (5 - i) / 5;
+    const y = pad.top + (ch / 5) * i;
+    ctx.fillText(val.toFixed(3), pad.left + cw + 8, y + 3);
+  }
+
+  // X-axis
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(148,163,184,0.5)';
+  for (let i = 0; i <= 4; i++) {
+    const val = (station.radius / 4) * i;
+    const x = pad.left + (cw / 4) * i;
+    ctx.fillText(fmt(val, 0) + 'm', x, pad.top + ch + 20);
+  }
+  ctx.fillText('Radius from axis', pad.left + cw / 2, pad.top + ch + 35);
+}
+
+// Materials
+function drawMaterials() {
+  const container = document.getElementById('materials-chart');
+  container.innerHTML = '';
+  const maxSF = Math.max(...MATERIALS.map(m => safetyFactor(m)));
+
+  for (const mat of MATERIALS) {
+    const sf = safetyFactor(mat);
+    const pct = Math.min((sf / Math.max(maxSF, 5)) * 100, 100);
+
+    const row = document.createElement('div');
+    row.className = 'material-row';
+
+    const name = document.createElement('div');
+    name.className = 'material-name';
+    name.textContent = mat.name;
+
+    const barBg = document.createElement('div');
+    barBg.className = 'material-bar-bg';
+
+    const bar = document.createElement('div');
+    bar.className = 'material-bar';
+    bar.style.width = '0%';
+    bar.style.background = sf >= 2 ? `linear-gradient(90deg, ${mat.color}88, ${mat.color})` : 'linear-gradient(90deg, #ef444488, #ef4444)';
+    bar.textContent = `SF: ${sf.toFixed(2)}`;
+    setTimeout(() => { bar.style.width = pct + '%'; }, 100);
+
+    const badge = document.createElement('div');
+    badge.className = 'sf-badge ' + (sf >= 2 ? 'sf-ok' : sf >= 1 ? 'sf-warn' : 'sf-fail');
+    badge.textContent = sf >= 2 ? 'ADEQUATE' : sf >= 1 ? 'MARGINAL' : 'FAIL';
+
+    barBg.appendChild(bar);
+    row.appendChild(name);
+    row.appendChild(barBg);
+    row.appendChild(badge);
+    container.appendChild(row);
+  }
+}
+
+// Mass Breakdown
+function drawMassBreakdown() {
+  const mass = massBreakdown();
+  const items = [
+    { label: 'Structural Shell', value: mass.shell, color: '#94a3b8' },
+    { label: 'Radiation Shielding', value: mass.shield, color: '#a855f7' },
+    { label: 'Interior Substrate', value: mass.substrate, color: '#22c55e' },
+    { label: 'Atmosphere', value: mass.atmo, color: '#3b82f6' },
+    { label: 'Water Reserves', value: mass.water, color: '#06b6d4' },
+  ];
+
+  // Donut chart
+  const canvas = document.getElementById('canvas-mass');
+  canvas.width = 400;
+  canvas.height = 400;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+  const cx = 100, cy = 100, outerR = 85, innerR = 55;
+
+  let startAngle = -PI / 2;
+  for (const item of items) {
+    const sweep = (item.value / mass.total) * 2 * PI;
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR, startAngle, startAngle + sweep);
+    ctx.arc(cx, cy, innerR, startAngle + sweep, startAngle, true);
+    ctx.closePath();
+    ctx.fillStyle = item.color + 'cc';
+    ctx.fill();
+    startAngle += sweep;
+  }
+
+  // Center text
+  ctx.fillStyle = '#e2e8f0';
+  ctx.font = 'bold 11px "Courier New", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('TOTAL', cx, cy - 6);
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = 'bold 13px "Courier New", monospace';
+  ctx.fillText(fmt(mass.total / 1e9, 1) + ' Gt', cx, cy + 10);
+
+  // Items list
+  const container = document.getElementById('mass-items');
+  container.innerHTML = '';
+  for (const item of items) {
+    const pct = (item.value / mass.total * 100).toFixed(1);
+    const div = document.createElement('div');
+    div.className = 'mass-item';
+    div.innerHTML = `
+      <div class="mass-value" style="color:${item.color}">${fmt(item.value / 1e9, 1)} <span style="font-size:0.7rem;color:var(--muted)">Gt</span></div>
+      <div class="mass-label">${item.label}</div>
+      <div class="mass-pct">${pct}%</div>
+    `;
+    container.appendChild(div);
+  }
+}
+
+// Zones list
+function drawZonesList() {
+  const container = document.getElementById('zones-list');
+  container.innerHTML = '';
+  for (const z of ZONES) {
+    const scaledR = z.r;
+    if (scaledR > station.radius) continue;
+    const g = gravityG(scaledR);
+    const div = document.createElement('div');
+    div.className = 'zone-item';
+    div.innerHTML = `
+      <span class="zone-dot" style="background:${z.color};box-shadow:0 0 6px ${z.color}44;"></span>
+      ${z.name}
+      <span class="zone-g">${g.toFixed(2)}g</span>
+    `;
+    container.appendChild(div);
+  }
+}
+
+// =====================================================
+// MOUSE INTERACTION
+// =====================================================
+document.getElementById('canvas-cross').addEventListener('mousemove', function(e) {
+  const rect = this.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  const cx = this._cx, cy = this._cy, maxR = this._maxR;
+  if (!cx) return;
+
+  const dx = mx - cx, dy = my - cy;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const info = document.getElementById('cross-info');
+
+  if (dist <= maxR) {
+    const radiusM = (dist / maxR) * station.radius;
+    const g = gravityG(radiusM);
+    document.getElementById('cross-r').textContent = Math.round(radiusM).toLocaleString() + ' m';
+    document.getElementById('cross-g').textContent = g.toFixed(3) + ' g (' + gravityAt(radiusM).toFixed(2) + ' m/s²)';
+    document.getElementById('cross-zone').textContent = getZoneName(radiusM);
+    info.classList.add('visible');
+  } else {
+    info.classList.remove('visible');
+  }
+});
+
+document.getElementById('canvas-cross').addEventListener('mouseleave', function() {
+  document.getElementById('cross-info').classList.remove('visible');
+});
+
+// =====================================================
+// CONTROLS
+// =====================================================
+function onControlChange() {
+  station.radius = parseFloat(document.getElementById('ctrl-radius').value);
+  station.length = parseFloat(document.getElementById('ctrl-length').value);
+  station.target_g = parseFloat(document.getElementById('ctrl-gravity').value);
+  updateControls();
+  updateAll();
+}
+
+document.getElementById('ctrl-radius').addEventListener('input', onControlChange);
+document.getElementById('ctrl-length').addEventListener('input', onControlChange);
+document.getElementById('ctrl-gravity').addEventListener('input', onControlChange);
+document.getElementById('ctrl-drop-h').addEventListener('input', function() {
+  document.getElementById('drop-h-val').textContent = this.value + ' m';
+  resetDrop();
+});
+
+// =====================================================
+// MAIN UPDATE
+// =====================================================
+function updateAll() {
+  updateStats();
+  drawCrossSection();
+  drawGravityChart();
+  drawCoriolis();
+  drawAtmosphere();
+  drawMaterials();
+  drawMassBreakdown();
+  drawZonesList();
+}
+
+// Animate cross section particles
+function animateParticles() {
+  drawCrossSection();
+  requestAnimationFrame(animateParticles);
+}
+
+// Init
+updateAll();
+animateParticles();
+
+// Resize handler
+window.addEventListener('resize', () => {
+  updateAll();
+});
+</script>
+</body>
+</html>
