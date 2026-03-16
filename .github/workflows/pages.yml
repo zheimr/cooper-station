@@ -24,6 +24,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            engine/target/
+          key: ${{ runner.os }}-pages-cargo-${{ hashFiles('engine/Cargo.lock') }}
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Build WASM
+        run: wasm-pack build --target web --features wasm
+        working-directory: engine
+
+      - name: Copy WASM to web directory
+        run: |
+          mkdir -p web/pkg
+          cp engine/pkg/cooper_engine_bg.wasm web/pkg/
+          cp engine/pkg/cooper_engine.js web/pkg/
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 

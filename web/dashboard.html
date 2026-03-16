@@ -425,7 +425,7 @@ input[type="range"]::-webkit-slider-thumb {
     <div class="header-title"><span>Cooper Station</span> &mdash; Engineering Dashboard</div>
   </div>
   <div class="header-links">
-    <span style="font-family:'Courier New',monospace;font-size:0.6rem;color:var(--muted);"><span class="live-dot"></span>LIVE PHYSICS</span>
+    <span id="engine-badge" style="font-family:'Courier New',monospace;font-size:0.6rem;color:var(--muted);"><span class="live-dot"></span>JS FALLBACK</span>
     <a href="index.html">Home</a>
     <a href="https://github.com/zheimr/cooper-station">GitHub</a>
   </div>
@@ -626,13 +626,36 @@ input[type="range"]::-webkit-slider-thumb {
 </div>
 
 <div class="dash-footer">
-  Cooper Station Engineering Dashboard — Real-time physics calculations<br>
+  Cooper Station Engineering Dashboard — Powered by Rust/WASM physics engine<br>
   <a href="https://github.com/zheimr/cooper-station">github.com/zheimr/cooper-station</a> — MIT License
 </div>
 
 <script>
 // =====================================================
-// PHYSICS ENGINE (mirrors Rust engine exactly)
+// WASM ENGINE LOADER + JS FALLBACK
+// =====================================================
+let wasmEngine = null;
+let useWasm = false;
+
+async function initWasm() {
+  try {
+    const module = await import('./pkg/cooper_engine.js');
+    await module.default();
+    wasmEngine = module;
+    useWasm = true;
+    const badge = document.getElementById('engine-badge');
+    badge.innerHTML = '<span class="live-dot" style="background:var(--gold);"></span>RUST/WASM';
+    badge.style.color = 'var(--gold)';
+    console.log('[Cooper Station] WASM engine loaded successfully');
+    updateAll();
+  } catch (e) {
+    console.warn('[Cooper Station] WASM unavailable, using JS fallback:', e.message);
+  }
+}
+initWasm();
+
+// =====================================================
+// PHYSICS ENGINE — WASM-first with JS fallback
 // =====================================================
 const PI = Math.PI;
 const R_GAS = 8.314;
@@ -659,14 +682,38 @@ const MATERIALS = [
 
 let station = { radius: 4000, length: 32000, target_g: 9.81, pressure: 50650, pop: 1000000 };
 
-function omega() { return Math.sqrt(station.target_g / station.radius); }
-function rpm() { return omega() * 60 / (2 * PI); }
-function period() { return 2 * PI / omega(); }
-function rimV() { return omega() * station.radius; }
-function gravityAt(r) { return omega() ** 2 * r; }
-function gravityG(r) { return gravityAt(r) / 9.81; }
+// Check if user changed station parameters from defaults
+function isDefaultStation() {
+  return station.radius === 4000 && station.length === 32000 && station.target_g === 9.81;
+}
+
+function omega() {
+  if (useWasm && isDefaultStation()) return wasmEngine.station_omega();
+  return Math.sqrt(station.target_g / station.radius);
+}
+function rpm() {
+  if (useWasm && isDefaultStation()) return wasmEngine.station_rpm();
+  return omega() * 60 / (2 * PI);
+}
+function period() {
+  if (useWasm && isDefaultStation()) return wasmEngine.station_period();
+  return 2 * PI / omega();
+}
+function rimV() {
+  if (useWasm && isDefaultStation()) return wasmEngine.rim_velocity();
+  return omega() * station.radius;
+}
+function gravityAt(r) {
+  if (useWasm && isDefaultStation()) return wasmEngine.gravity_at(r);
+  return omega() ** 2 * r;
+}
+function gravityG(r) {
+  if (useWasm && isDefaultStation()) return wasmEngine.gravity_fraction_at(r);
+  return gravityAt(r) / 9.81;
+}
 
 function pressureAt(r) {
+  if (useWasm && isDefaultStation()) return wasmEngine.pressure_at(r);
   const w = omega();
   const expRim = w**2 * station.radius**2 * MEAN_MOLAR_MASS / (2 * R_GAS * TEMP);
   const pAxis = station.pressure / Math.exp(expRim);
@@ -683,10 +730,21 @@ function pressureRatio() {
   return Math.exp(w**2 * station.radius**2 * MEAN_MOLAR_MASS / (2 * R_GAS * TEMP));
 }
 
-function hoopStress(mat) { return mat.density * rimV() ** 2; }
+function hoopStress(mat) {
+  if (useWasm && isDefaultStation()) {
+    const idx = MATERIALS.indexOf(mat);
+    if (idx >= 0) return wasmEngine.hoop_stress(idx);
+  }
+  return mat.density * rimV() ** 2;
+}
 function safetyFactor(mat) { return mat.yield / hoopStress(mat); }
 
 function massBreakdown() {
+  if (useWasm && isDefaultStation()) {
+    try {
+      return JSON.parse(wasmEngine.mass_breakdown_json());
+    } catch(e) {}
+  }
   const sa = 2 * PI * station.radius * station.length;
   const vol = PI * station.radius**2 * station.length;
   const shell = 7800 * sa * 8;
