@@ -73,7 +73,7 @@ WASM API exports 20+ functions: `gravity_at(r)`, `coriolis_acceleration(v)`, `pr
 
 ```
 cooper-station/
-├── engine/                  # Rust physics engine
+├── engine/                  # Rust physics engine (also compiles to WASM)
 │   ├── src/
 │   │   ├── station.rs       # Core config, derived params
 │   │   ├── gravity.rs       # Gravity zones, g(r) = ω²r
@@ -82,14 +82,77 @@ cooper-station/
 │   │   ├── structure.rs     # Hoop stress, materials
 │   │   └── wasm.rs          # WASM API (20+ exports)
 │   └── Cargo.toml
-├── modules/                 # 12 engineering specs
+├── modules/                 # 12 engineering module specifications
 ├── web/
 │   ├── index.html           # Landing page (Three.js)
 │   └── dashboard.html       # Interactive physics dashboard
-└── .github/workflows/
-    ├── ci.yml               # Rust test + clippy + WASM build
-    └── pages.yml            # GitHub Pages deploy
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml           # Rust test + clippy + WASM build
+│   │   └── pages.yml        # GitHub Pages deploy
+│   ├── ISSUE_TEMPLATE/      # Issue templates (module, physics error, sim proposal)
+│   └── PULL_REQUEST_TEMPLATE.md
+├── docs/                    # Additional documentation
+├── scripts/                 # Utility scripts (repo setup, issue creation)
+└── simulations/             # Dashboard prototypes
 ```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Rust toolchain](https://rustup.rs/) (install via `rustup`)
+- [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/) (for WASM builds)
+- A modern browser (Chrome, Firefox, Edge)
+
+### Clone & Build
+
+```bash
+git clone https://github.com/zheimr/cooper-station.git
+cd cooper-station/engine
+
+cargo build        # compile the physics engine
+cargo test         # run all 29 unit tests
+cargo clippy       # lint (should be zero warnings)
+```
+
+### Build WASM
+
+```bash
+cd engine
+wasm-pack build --target web --features wasm
+```
+
+### Run the Dashboard Locally
+
+The simplest option is to open `web/dashboard.html` directly in your browser. If you need WASM integration (which requires proper CORS headers), serve the files instead:
+
+```bash
+cd web
+python -m http.server 8000
+# then open http://localhost:8000/dashboard.html
+```
+
+---
+
+## Development Workflow
+
+1. **Fork** the repo and create a feature branch
+2. **Implement** your changes (engine code, module specs, dashboard, etc.)
+3. **Test** locally — `cargo test` and `cargo clippy` must pass
+4. **Submit a PR** — CI will run automatically
+
+### CI Checks
+
+Every pull request runs:
+
+- `cargo test` — all engine unit tests
+- `cargo clippy` — zero warnings required
+- WASM build — `wasm-pack build --target web --features wasm`
+
+All checks must pass before a PR can be merged.
 
 ---
 
